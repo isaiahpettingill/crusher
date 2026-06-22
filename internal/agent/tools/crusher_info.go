@@ -8,20 +8,20 @@ import (
 	"strings"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/lsp"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/lsp"
+	"github.com/charmbracelet/crusher/internal/skills"
 )
 
-const CrushInfoToolName = "crush_info"
+const CrusherInfoToolName = "crusher_info"
 
-//go:embed crush_info.md
-var crushInfoDescription string
+//go:embed crusher_info.md
+var crusherInfoDescription string
 
-type CrushInfoParams struct{}
+type CrusherInfoParams struct{}
 
-func NewCrushInfoTool(
+func NewCrusherInfoTool(
 	cfg *config.ConfigStore,
 	lspManager *lsp.Manager,
 	allSkills []*skills.Skill,
@@ -29,15 +29,15 @@ func NewCrushInfoTool(
 	skillTracker *skills.Tracker,
 ) fantasy.AgentTool {
 	return fantasy.NewAgentTool(
-		CrushInfoToolName,
-		crushInfoDescription,
-		func(ctx context.Context, _ CrushInfoParams, _ fantasy.ToolCall) (fantasy.ToolResponse, error) {
-			return fantasy.NewTextResponse(buildCrushInfo(cfg, lspManager, allSkills, activeSkills, skillTracker)), nil
+		CrusherInfoToolName,
+		crusherInfoDescription,
+		func(ctx context.Context, _ CrusherInfoParams, _ fantasy.ToolCall) (fantasy.ToolResponse, error) {
+			return fantasy.NewTextResponse(buildCrusherInfo(cfg, lspManager, allSkills, activeSkills, skillTracker)), nil
 		},
 	)
 }
 
-func buildCrushInfo(cfg *config.ConfigStore, lspManager *lsp.Manager, allSkills []*skills.Skill, activeSkills []*skills.Skill, skillTracker *skills.Tracker) string {
+func buildCrusherInfo(cfg *config.ConfigStore, lspManager *lsp.Manager, allSkills []*skills.Skill, activeSkills []*skills.Skill, skillTracker *skills.Tracker) string {
 	var b strings.Builder
 
 	writeConfigFiles(&b, cfg)

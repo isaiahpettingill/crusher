@@ -192,7 +192,7 @@ func TestRun_CtxCancel_ExternalSleep(t *testing.T) {
 			t.Fatalf("sleep took too long to cancel: %v", elapsed)
 		}
 		if err == nil {
-			t.Fatal("expected non-nil error from cancelled sleep")
+			t.Fatal("expected non-nil error from canceled sleep")
 		}
 	case <-time.After(time.Second):
 		t.Fatal("Run did not return within 1s after ctx cancel")

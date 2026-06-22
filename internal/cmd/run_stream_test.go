@@ -6,14 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/stretchr/testify/require"
 )
 
 // TestRunStream_ToolUseDoesNotTerminate is the regression test for
 // the original bug: a tool-call assistant message has a Finish part
-// with reason=tool_use and used to terminate `crush run` early via
+// with reason=tool_use and used to terminate `crusher run` early via
 // the discarded `msg.IsFinished()` exit condition. With the new
 // RunComplete-driven loop, tool_use finishes must keep the stream
 // alive so the post-tool final text still reaches stdout.
@@ -129,7 +129,7 @@ func TestRunStream_ReconcilesPartialStream(t *testing.T) {
 }
 
 // TestRunStream_IgnoresOtherSessions ensures multi-session
-// subscribers (e.g. a TUI watching workspace events while `crush
+// subscribers (e.g. a TUI watching workspace events while `crusher
 // run` is in flight against the same workspace) do not cause
 // premature exit on RunComplete for a different session.
 func TestRunStream_IgnoresOtherSessions(t *testing.T) {
@@ -146,7 +146,7 @@ func TestRunStream_IgnoresOtherSessions(t *testing.T) {
 }
 
 // TestRunStream_ErrorRunComplete surfaces a failing run as a
-// non-nil error from `crush run` so shells and CI catch it via
+// non-nil error from `crusher run` so shells and CI catch it via
 // exit status.
 func TestRunStream_ErrorRunComplete(t *testing.T) {
 	t.Parallel()
@@ -161,17 +161,17 @@ func TestRunStream_ErrorRunComplete(t *testing.T) {
 	require.Contains(t, err.Error(), "model temporarily unavailable")
 }
 
-// TestRunStream_CancelledRunCompleteIsClean ensures a cancelled
-// run (e.g. Ctrl+C while `crush run` waits) exits cleanly rather
+// TestRunStream_CanceledRunCompleteIsClean ensures a canceled
+// run (e.g. Ctrl+C while `crusher run` waits) exits cleanly rather
 // than reporting the cancellation as a failure.
-func TestRunStream_CancelledRunCompleteIsClean(t *testing.T) {
+func TestRunStream_CanceledRunCompleteIsClean(t *testing.T) {
 	t.Parallel()
 
 	s := &runStream{sessionID: "S", out: &bytes.Buffer{}, read: map[string]int{}}
 	done, err := s.handle(pubsub.Event[proto.RunComplete]{Payload: proto.RunComplete{
 		SessionID: "S",
 		Error:     "context canceled",
-		Cancelled: true,
+		Canceled:  true,
 	}}, nil)
 	require.True(t, done)
 	require.NoError(t, err)
@@ -201,7 +201,7 @@ func TestRunStream_LeadingWhitespaceTrimmedOnce(t *testing.T) {
 // TestRunStream_StopSpinnerInvokedOnFirstOutput verifies the
 // spinner is stopped exactly when meaningful output starts (either
 // a streamed assistant message or the reconciliation tail). This
-// matches the prior behaviour and prevents the spinner from
+// matches the prior behavior and prevents the spinner from
 // painting over the final response on TTYs.
 func TestRunStream_StopSpinnerInvokedOnFirstOutput(t *testing.T) {
 	t.Parallel()
@@ -217,7 +217,7 @@ func TestRunStream_StopSpinnerInvokedOnFirstOutput(t *testing.T) {
 }
 
 // TestRunStream_RunIDFiltersForeignTurns covers the busy-session
-// queue scenario: `crush run --continue` attaches to a session
+// queue scenario: `crusher run --continue` attaches to a session
 // whose currently running turn finishes first, publishing its
 // RunComplete on the same session ID. Without per-run correlation
 // the stream would exit on that foreign event and drop our own
@@ -396,7 +396,7 @@ func TestRunStream_AgentErrorNoRunIDFiltersBySession(t *testing.T) {
 }
 
 // TestRunStream_NoRunIDFallsBackToSessionID preserves the older
-// behaviour for callers (and tests) that don't supply a RunID:
+// behavior for callers (and tests) that don't supply a RunID:
 // SessionID-only matching still terminates the stream on the
 // session's RunComplete. This keeps the contract backwards
 // compatible with servers that don't echo RunID and with the

@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent"
-	"github.com/charmbracelet/crush/internal/app"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/proto"
+	"github.com/charmbracelet/crusher/internal/agent"
+	"github.com/charmbracelet/crusher/internal/app"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/proto"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -77,7 +77,7 @@ func insertRunCompleteWorkspace(t *testing.T, b *Backend, base context.Context, 
 // error returned from RunAccepted before the coordinator could publish
 // its own terminal event (e.g. a readyWg or UpdateModels failure,
 // modeled here by a stub coordinator) still yields a reliable terminal
-// RunComplete for the run's RunID. Without it, a `crush run` caller
+// RunComplete for the run's RunID. Without it, a `crusher run` caller
 // blocking on that RunID would hang because the lossy TypeAgentError
 // event is not a guaranteed terminal signal.
 func TestRunAgent_PreRunErrorPublishesTerminalRunComplete(t *testing.T) {
@@ -100,7 +100,7 @@ func TestRunAgent_PreRunErrorPublishesTerminalRunComplete(t *testing.T) {
 		require.Equal(t, "S1", ev.Payload.SessionID)
 		require.Equal(t, runErr.Error(), ev.Payload.Error,
 			"the fallback terminal event must be marked errored")
-		require.False(t, ev.Payload.Cancelled)
+		require.False(t, ev.Payload.Canceled)
 	case <-time.After(2 * time.Second):
 		t.Fatal("no terminal RunComplete published for a pre-run error; a run waiter would hang")
 	}
@@ -138,7 +138,7 @@ func TestRunAgent_NoFallbackWhenCoordinatorPublished(t *testing.T) {
 // TestRunAgent_CancellationPublishesNoErrorTerminal verifies that a
 // context.Canceled result from RunAccepted produces no errored terminal
 // RunComplete from runAgent: cancellation is sessionAgent.Run's
-// responsibility (it publishes the cancelled marker) and the dispatcher
+// responsibility (it publishes the canceled marker) and the dispatcher
 // must not synthesize an error terminal for it.
 func TestRunAgent_CancellationPublishesNoErrorTerminal(t *testing.T) {
 	t.Parallel()

@@ -1,4 +1,4 @@
-// Package agent is the core orchestration layer for Crush AI agents.
+// Package agent is the core orchestration layer for Crusher AI agents.
 //
 // It provides session-based AI agent functionality for managing
 // conversations, tool execution, and message handling. It coordinates
@@ -34,17 +34,17 @@ import (
 	"charm.land/fantasy/providers/openrouter"
 	"charm.land/fantasy/providers/vercel"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/csync"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/stringext"
-	"github.com/charmbracelet/crush/internal/version"
+	"github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/csync"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/stringext"
+	"github.com/charmbracelet/crusher/internal/version"
 	"github.com/charmbracelet/x/exp/charmtone"
 )
 
@@ -57,7 +57,7 @@ const (
 	smallContextWindowRatio     = 0.2
 )
 
-var userAgent = fmt.Sprintf("Charm-Crush/%s (https://charm.land/crush)", version.Version)
+var userAgent = fmt.Sprintf("Charm-Crusher/%s (https://charm.land/crusher)", version.Version)
 
 //go:embed templates/title.md
 var titlePrompt []byte
@@ -78,7 +78,7 @@ type SessionAgentCall struct {
 	// this turn. It is preserved when the call is enqueued behind a
 	// busy session so the queued turn's terminal event is still
 	// recognisable to the original caller. Callers that need a
-	// reliable completion contract (e.g. `crush run` against a
+	// reliable completion contract (e.g. `crusher run` against a
 	// session that may be busy) MUST set it; SessionID alone is
 	// ambiguous when concurrent turns share the same session.
 	RunID            string
@@ -97,7 +97,7 @@ type SessionAgentCall struct {
 	// callback instead of emitting it on the RunComplete broker. The
 	// coordinator uses this hook to coalesce the unauthorized →
 	// re-auth → retry chain into a single user-visible terminal
-	// event, so non-interactive clients (e.g. `crush run`) don't
+	// event, so non-interactive clients (e.g. `crusher run`) don't
 	// exit on a stale failed-attempt RunComplete before the
 	// successful retry. It is intentionally stripped when queueing
 	// a busy-session call (see Run): the originating
@@ -370,8 +370,8 @@ func (a *sessionAgent) enqueueCall(call SessionAgentCall) {
 //
 // Calls covered by a pending cancel are dropped; the dropped ones that
 // carry a RunID are returned in canceledWithRunID so the caller can
-// publish their terminal cancelled RunComplete (a caller waiting on that
-// RunID, e.g. `crush run`, would otherwise hang). Uncanceled calls without
+// publish their terminal canceled RunComplete (a caller waiting on that
+// RunID, e.g. `crusher run`, would otherwise hang). Uncanceled calls without
 // a RunID are returned in fold to be folded into the active turn,
 // preserving the existing follow-up behavior. Uncanceled calls that carry
 // a RunID are left in the queue so each runs as its own turn via the
@@ -406,11 +406,11 @@ func (a *sessionAgent) drainQueueForStep(sessionID string) (fold, canceledWithRu
 	return fold, canceledWithRunID
 }
 
-// publishCanceledQueueDrops emits a terminal cancelled RunComplete for
+// publishCanceledQueueDrops emits a terminal canceled RunComplete for
 // every dropped queued call that carries a RunID. A queued prompt removed
 // from the queue without ever running — covered by a pending cancel, or
 // cleared by Cancel/ClearQueue — would otherwise leave a caller blocked on
-// that RunID: `crush run` ignores live message events and exits only on a
+// that RunID: `crusher run` ignores live message events and exits only on a
 // RunComplete whose RunID matches. Calls without a RunID had no such waiter
 // and are dropped silently as before. A detached, bounded context keeps the
 // must-deliver publish alive even when the run context that triggered the
@@ -435,14 +435,14 @@ func (a *sessionAgent) publishCanceledQueueDrops(drops []SessionAgentCall) {
 		a.publishRunComplete(ctx, d, notify.RunComplete{
 			SessionID: d.SessionID,
 			RunID:     d.RunID,
-			Cancelled: true,
+			Canceled:  true,
 		})
 	}
 }
 
 // clearQueueAndNotify removes all queued prompts for the session and
-// publishes a terminal cancelled RunComplete for any that carried a RunID,
-// so callers waiting on those RunIDs (e.g. `crush run`) are not left
+// publishes a terminal canceled RunComplete for any that carried a RunID,
+// so callers waiting on those RunIDs (e.g. `crusher run`) are not left
 // hanging when their queued prompt is discarded without running.
 func (a *sessionAgent) clearQueueAndNotify(sessionID string) {
 	queued, ok := a.messageQueue.Get(sessionID)
@@ -516,7 +516,7 @@ func (a *sessionAgent) persistCanceledTurn(ctx context.Context, call SessionAgen
 // ctx is used only for the bounded-blocking must-deliver publish; the
 // terminal payload is supplied by the caller. This is the single emit path
 // shared by the streaming defer and the cancel-on-entry early return so a
-// caller waiting on RunComplete (e.g. `crush run` with a RunID) always
+// caller waiting on RunComplete (e.g. `crusher run` with a RunID) always
 // observes exactly one terminal event regardless of which Run branch ends
 // the turn.
 func (a *sessionAgent) publishRunComplete(ctx context.Context, call SessionAgentCall, complete notify.RunComplete) {
@@ -585,7 +585,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			// This path returns before the streaming defer that
 			// publishes RunComplete is installed, so emit the terminal
 			// event explicitly. Without it, a caller waiting on
-			// RunComplete for this RunID (e.g. `crush run`, which
+			// RunComplete for this RunID (e.g. `crusher run`, which
 			// ignores message events and blocks on RunComplete) would
 			// hang on an immediately-canceled accepted run.
 			call.Accepted.Close()
@@ -593,7 +593,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			complete := notify.RunComplete{
 				SessionID: call.SessionID,
 				RunID:     call.RunID,
-				Cancelled: true,
+				Canceled:  true,
 			}
 			if err := a.persistCanceledTurn(ctx, call, false); err != nil {
 				complete.Error = err.Error()
@@ -759,9 +759,9 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 		}
 		if retErr != nil {
 			complete.Error = retErr.Error()
-			complete.Cancelled = errors.Is(retErr, context.Canceled)
+			complete.Canceled = errors.Is(retErr, context.Canceled)
 		} else if ctx.Err() != nil {
-			complete.Cancelled = true
+			complete.Canceled = true
 		}
 		// Prefer the per-call hook when supplied so the coordinator
 		// can coalesce retries (e.g. unauthorized → re-auth → retry)
@@ -811,7 +811,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			// it run as part of this step. Coverage is per-call by accept
 			// sequence so a follow-up queued after the cancel (higher seq)
 			// is not dropped. A dropped prompt carrying a RunID still gets
-			// its terminal cancelled RunComplete so a caller waiting on it
+			// its terminal canceled RunComplete so a caller waiting on it
 			// does not hang. Uncanceled prompts without a RunID are folded
 			// into this turn; uncanceled prompts with a RunID are left
 			// queued so each runs as its own turn (with its own
@@ -1047,7 +1047,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 		// Ensure we finish thinking on error to close the reasoning state.
 		currentAssistant.FinishThinking()
 		toolCalls := currentAssistant.ToolCalls()
-		// INFO: we use the cleanup context here because the genCtx has been cancelled.
+		// INFO: we use the cleanup context here because the genCtx has been canceled.
 		msgs, createErr := a.messages.List(cleanupCtx, currentAssistant.SessionID)
 		if createErr != nil {
 			return nil, createErr
@@ -1082,7 +1082,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			}
 			content := "There was an error while executing the tool"
 			if isCancelErr {
-				content = "Error: user cancelled assistant tool calling"
+				content = "Error: user canceled assistant tool calling"
 			}
 			toolResult := message.ToolResult{
 				ToolCallID: tc.ID,
@@ -1107,7 +1107,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 		if isCancelErr {
 			currentAssistant.AddFinish(message.FinishReasonCanceled, "User canceled request", "")
 		} else if isHyper && errors.As(err, &providerErr) && providerErr.StatusCode == http.StatusUnauthorized {
-			currentAssistant.AddFinish(message.FinishReasonError, "Unauthorized", `Please re-authenticate with Hyper. You can also run "crush auth" to re-authenticate.`)
+			currentAssistant.AddFinish(message.FinishReasonError, "Unauthorized", `Please re-authenticate with Hyper. You can also run "crusher auth" to re-authenticate.`)
 		} else if isHyper && errors.As(err, &providerErr) && providerErr.StatusCode == http.StatusPaymentRequired {
 			url := hyper.BaseURL()
 			link := linkStyle.Hyperlink(url, "id=hyper").Render(url)
@@ -1130,7 +1130,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			currentAssistant.AddFinish(message.FinishReasonError, defaultTitle, err.Error())
 		}
 		// Note: we use the cleanup context here because the genCtx has been
-		// cancelled.
+		// canceled.
 		updateErr := a.messages.Update(cleanupCtx, *currentAssistant)
 		if updateErr != nil {
 			return nil, updateErr
@@ -1207,7 +1207,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 		queuedMessages = kept
 		a.messageQueue.Set(call.SessionID, kept)
 		// A dropped prompt carrying a RunID must still publish its
-		// terminal cancelled RunComplete so a caller waiting on that
+		// terminal canceled RunComplete so a caller waiting on that
 		// RunID does not hang.
 		a.publishCanceledQueueDrops(canceledRunIDDrops)
 	}
@@ -1268,7 +1268,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			complete.Text = currentAssistant.Content().String()
 		}
 		if ctx.Err() != nil {
-			complete.Cancelled = true
+			complete.Canceled = true
 		}
 		a.publishRunComplete(ctx, call, complete)
 	}
@@ -1359,7 +1359,7 @@ func (a *sessionAgent) Summarize(ctx context.Context, sessionID string, opts fan
 	if err != nil {
 		isCancelErr := errors.Is(err, context.Canceled)
 		if isCancelErr {
-			// User cancelled summarize we need to remove the summary message.
+			// User canceled summarize we need to remove the summary message.
 			deleteErr := a.messages.Delete(ctx, summaryMessage.ID)
 			return deleteErr
 		}
@@ -1421,7 +1421,7 @@ func (a *sessionAgent) Summarize(ctx context.Context, sessionID string, opts fan
 }
 
 func (a *sessionAgent) getCacheControlOptions() fantasy.ProviderOptions {
-	if t, _ := strconv.ParseBool(os.Getenv("CRUSH_DISABLE_ANTHROPIC_CACHE")); t {
+	if t, _ := strconv.ParseBool(os.Getenv("CRUSHER_DISABLE_ANTHROPIC_CACHE")); t {
 		return fantasy.ProviderOptions{}
 	}
 	return fantasy.ProviderOptions{
@@ -1489,7 +1489,7 @@ If not, please feel free to ignore. Again do not mention this message to the use
 		if len(m.Parts) == 0 {
 			continue
 		}
-		// Assistant message without content or tool calls (cancelled before it returned anything).
+		// Assistant message without content or tool calls (canceled before it returned anything).
 		if m.Role == message.Assistant && len(m.ToolCalls()) == 0 && m.Content().Text == "" && m.ReasoningContent().String() == "" {
 			continue
 		}
@@ -1658,7 +1658,7 @@ func (a *sessionAgent) GenerateTitle(ctx context.Context, sessionID string, user
 	}
 
 	// Ensure the session always gets a title even if every path below
-	// fails or the context is cancelled before we finish.
+	// fails or the context is canceled before we finish.
 	var titleSaved bool
 	defer func() {
 		if !titleSaved {

@@ -117,7 +117,7 @@ func TestProcessIsolation_ZshJobControlDoesNotSuspend(t *testing.T) {
 }
 
 // TestProcessIsolation_ChildProcessGroupKill verifies that when context
-// is cancelled, the signal reaches the entire child process group (not
+// is canceled, the signal reaches the entire child process group (not
 // just the direct child).
 func TestProcessIsolation_ChildProcessGroupKill(t *testing.T) {
 	t.Parallel()
@@ -134,7 +134,7 @@ func TestProcessIsolation_ChildProcessGroupKill(t *testing.T) {
 	elapsed := time.Since(start)
 
 	if err == nil {
-		t.Fatal("expected error from cancelled context")
+		t.Fatal("expected error from canceled context")
 	}
 	// Allow up to 4s: 500ms context timeout + 2s kill timeout + margin.
 	if elapsed > 4*time.Second {

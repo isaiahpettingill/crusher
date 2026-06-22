@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/env"
-	"github.com/charmbracelet/crush/internal/shell"
+	"github.com/charmbracelet/crusher/internal/env"
+	"github.com/charmbracelet/crusher/internal/shell"
 )
 
 // resolveTimeout bounds how long a single ResolveValue call may spend
@@ -84,7 +84,7 @@ func NewShellVariableResolver(e env.Env, opts ...ShellResolverOption) VariableRe
 // credentials should use ${VAR:?message} so a missing variable fails
 // loudly at load time instead of quietly resolving to empty. Global
 // strict mode is available via shell.NoUnset for callers that want the
-// old nounset-on behaviour back.
+// old nounset-on behavior back.
 func (r *shellVariableResolver) ResolveValue(value string) (string, error) {
 	// Preserve the historical backward-compat contract: a lone "$" is a
 	// malformed config value, not a legal literal. The underlying shell

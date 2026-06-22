@@ -7,9 +7,9 @@ import (
 	"log/slog"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/hooks"
-	"github.com/charmbracelet/crush/internal/permission"
+	"github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/hooks"
+	"github.com/charmbracelet/crusher/internal/permission"
 	"github.com/tidwall/sjson"
 )
 

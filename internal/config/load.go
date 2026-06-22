@@ -20,13 +20,14 @@ import (
 	"time"
 
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/csync"
-	"github.com/charmbracelet/crush/internal/discover"
-	"github.com/charmbracelet/crush/internal/env"
-	"github.com/charmbracelet/crush/internal/filepathext"
-	"github.com/charmbracelet/crush/internal/fsext"
-	"github.com/charmbracelet/crush/internal/home"
+	"github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/csync"
+	"github.com/charmbracelet/crusher/internal/discover"
+	"github.com/charmbracelet/crusher/internal/env"
+	"github.com/charmbracelet/crusher/internal/filepathext"
+	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/charmbracelet/crusher/internal/home"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
 	powernapConfig "github.com/charmbracelet/x/powernap/pkg/config"
 	"github.com/qjebbs/go-jsons"
 	"github.com/tidwall/gjson"
@@ -146,15 +147,15 @@ func mustMarshalConfig(cfg *Config) []byte {
 	return data
 }
 
-func PushPopCrushEnv() func() {
+func PushPopCrusherEnv() func() {
 	var found []string
 	for _, ev := range os.Environ() {
-		if strings.HasPrefix(ev, "CRUSH_") {
+		if strings.HasPrefix(ev, "CRUSHER_") {
 			pair := strings.SplitN(ev, "=", 2)
 			if len(pair) != 2 {
 				continue
 			}
-			found = append(found, strings.TrimPrefix(pair[0], "CRUSH_"))
+			found = append(found, strings.TrimPrefix(pair[0], "CRUSHER_"))
 		}
 	}
 	backups := make(map[string]string)
@@ -163,7 +164,7 @@ func PushPopCrushEnv() func() {
 	}
 
 	for _, ev := range found {
-		os.Setenv(ev, os.Getenv("CRUSH_"+ev))
+		os.Setenv(ev, os.Getenv("CRUSHER_"+ev))
 	}
 
 	restore := func() {
@@ -176,7 +177,7 @@ func PushPopCrushEnv() func() {
 
 func (c *Config) configureProviders(ctx context.Context, store *ConfigStore, env env.Env, resolver VariableResolver, knownProviders []catwalk.Provider) error {
 	knownProviderNames := make(map[string]bool)
-	restore := PushPopCrushEnv()
+	restore := PushPopCrusherEnv()
 	defer restore()
 
 	// When disable_default_providers is enabled, skip all default/embedded
@@ -400,6 +401,9 @@ func (c *Config) configureProviders(ctx context.Context, store *ConfigStore, env
 
 		// Make sure the provider ID is set.
 		providerConfig.ID = id
+		if id == codex.ProviderID && providerConfig.OAuthToken != nil {
+			providerConfig.SetupCodex()
+		}
 		providerConfig.Name = cmp.Or(providerConfig.Name, id) // Use ID as name if not set
 		// Default to OpenAI if not set.
 		providerConfig.Type = cmp.Or(providerConfig.Type, catwalk.TypeOpenAICompat)
@@ -489,10 +493,10 @@ func (c *Config) setDefaults(workingDir, dataDir string) {
 		c.Options.TUI = &TUIOptions{}
 	}
 	if len(c.Options.GlobalContextPaths) == 0 {
-		crushConfigDir := filepath.Dir(GlobalConfig())
+		crusherConfigDir := filepath.Dir(GlobalConfig())
 		c.Options.GlobalContextPaths = []string{
-			filepath.Join(crushConfigDir, "CRUSH.md"),
-			filepath.Join(filepath.Dir(crushConfigDir), "AGENTS.md"),
+			filepath.Join(crusherConfigDir, "CRUSHER.md"),
+			filepath.Join(filepath.Dir(crusherConfigDir), "AGENTS.md"),
 		}
 	}
 	slices.Sort(c.Options.GlobalContextPaths)
@@ -543,11 +547,11 @@ func (c *Config) setDefaults(workingDir, dataDir string) {
 	// Project specific skills dirs.
 	c.Options.SkillsPaths = append(c.Options.SkillsPaths, ProjectSkillsDir(workingDir)...)
 
-	if str, ok := os.LookupEnv("CRUSH_DISABLE_PROVIDER_AUTO_UPDATE"); ok {
+	if str, ok := os.LookupEnv("CRUSHER_DISABLE_PROVIDER_AUTO_UPDATE"); ok {
 		c.Options.DisableProviderAutoUpdate, _ = strconv.ParseBool(str)
 	}
 
-	if str, ok := os.LookupEnv("CRUSH_DISABLE_DEFAULT_PROVIDERS"); ok {
+	if str, ok := os.LookupEnv("CRUSHER_DISABLE_DEFAULT_PROVIDERS"); ok {
 		c.Options.DisableDefaultProviders, _ = strconv.ParseBool(str)
 	}
 
@@ -809,7 +813,7 @@ func configureSelectedModels(store *ConfigStore, knownProviders []catwalk.Provid
 // lookupConfigs searches config files starting at cwd and walking up
 // through the current project. The upward walk stops at the git
 // working tree root when one can be detected, otherwise at cwd itself,
-// so an unrelated crush.json placed above the project is never picked
+// so an unrelated crusher.json placed above the project is never picked
 // up. Global user-level config locations are always included
 // regardless of the boundary.
 func lookupConfigs(cwd string) []string {
@@ -975,8 +979,8 @@ func migrateDisableNotifications() {
 
 // GlobalConfig returns the global configuration file path for the application.
 func GlobalConfig() string {
-	if crushGlobal := os.Getenv("CRUSH_GLOBAL_CONFIG"); crushGlobal != "" {
-		return filepath.Join(crushGlobal, fmt.Sprintf("%s.json", appName))
+	if crusherGlobal := os.Getenv("CRUSHER_GLOBAL_CONFIG"); crusherGlobal != "" {
+		return filepath.Join(crusherGlobal, fmt.Sprintf("%s.json", appName))
 	}
 	return filepath.Join(home.Config(), appName, fmt.Sprintf("%s.json", appName))
 }
@@ -984,8 +988,8 @@ func GlobalConfig() string {
 // GlobalCacheDir returns the path to the global cache directory for the
 // application.
 func GlobalCacheDir() string {
-	if crushCache := os.Getenv("CRUSH_CACHE_DIR"); crushCache != "" {
-		return crushCache
+	if crusherCache := os.Getenv("CRUSHER_CACHE_DIR"); crusherCache != "" {
+		return crusherCache
 	}
 	if xdgCacheHome := os.Getenv("XDG_CACHE_HOME"); xdgCacheHome != "" {
 		return filepath.Join(xdgCacheHome, appName)
@@ -1008,16 +1012,16 @@ func ProjectConfigs(cwd string) []string {
 // GlobalConfigData returns the path to the main data directory for the application.
 // this config is used when the app overrides configurations instead of updating the global config.
 func GlobalConfigData() string {
-	if crushData := os.Getenv("CRUSH_GLOBAL_DATA"); crushData != "" {
-		return filepath.Join(crushData, fmt.Sprintf("%s.json", appName))
+	if crusherData := os.Getenv("CRUSHER_GLOBAL_DATA"); crusherData != "" {
+		return filepath.Join(crusherData, fmt.Sprintf("%s.json", appName))
 	}
 	if xdgDataHome := os.Getenv("XDG_DATA_HOME"); xdgDataHome != "" {
 		return filepath.Join(xdgDataHome, appName, fmt.Sprintf("%s.json", appName))
 	}
 
 	// return the path to the main data directory
-	// for windows, it should be in `%LOCALAPPDATA%/crush/`
-	// for linux and macOS, it should be in `$HOME/.local/share/crush/`
+	// for windows, it should be in `%LOCALAPPDATA%/crusher/`
+	// for linux and macOS, it should be in `$HOME/.local/share/crusher/`
 	if runtime.GOOS == "windows" {
 		localAppData := cmp.Or(
 			os.Getenv("LOCALAPPDATA"),
@@ -1082,7 +1086,7 @@ func worktreeRoot(dir string) string {
 // projectBoundary returns the directory at which an upward configuration
 // search rooted at dir should stop. It is the git working tree root when
 // one can be detected, otherwise dir itself. Returning dir as a
-// fallback keeps Crush from silently adopting state files placed above
+// fallback keeps Crusher from silently adopting state files placed above
 // the current project.
 func projectBoundary(dir string) string {
 	if root := worktreeRoot(dir); root != "" {
@@ -1099,8 +1103,8 @@ func projectBoundary(dir string) string {
 // Skills in these directories are auto-discovered and their files can be read
 // without permission prompts.
 func GlobalSkillsDirs() []string {
-	if crushSkills := os.Getenv("CRUSH_SKILLS_DIR"); crushSkills != "" {
-		return []string{crushSkills}
+	if crusherSkills := os.Getenv("CRUSHER_SKILLS_DIR"); crusherSkills != "" {
+		return []string{crusherSkills}
 	}
 
 	paths := []string{
@@ -1111,7 +1115,7 @@ func GlobalSkillsDirs() []string {
 		filepath.Join(home.Dir(), ".claude", "skills"),
 	}
 
-	// On Windows, also load from app data on top of `$HOME/.config/crush`.
+	// On Windows, also load from app data on top of `$HOME/.config/crusher`.
 	// This is here mostly for backwards compatibility.
 	if runtime.GOOS == "windows" {
 		appData := cmp.Or(
@@ -1133,12 +1137,12 @@ func GlobalSkillsDirs() []string {
 // git-root lookups to prevent drift when a new convention is added.
 var projectSkillSubdirs = []string{
 	".agents/skills",
-	".crush/skills",
+	".crusher/skills",
 	".claude/skills",
 	".cursor/skills",
 }
 
-// ProjectSkillsDir returns the default project directories for which Crush
+// ProjectSkillsDir returns the default project directories for which Crusher
 // will look for skills. In addition to the working directory, it also
 // checks the git working tree root so that monorepo-level skills are
 // discovered when the user is inside a subdirectory.

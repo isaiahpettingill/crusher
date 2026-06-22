@@ -5,11 +5,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/skills"
 	"github.com/stretchr/testify/require"
 )
 
@@ -88,7 +88,7 @@ func TestSkillsEventToProto_RoundTrip(t *testing.T) {
 // TestRunCompleteToProto_RoundTrip verifies that the authoritative
 // per-run completion event survives the SSE envelope conversion with
 // all reconciliation fields intact. SessionID, MessageID, and Text
-// are what non-interactive clients (e.g. `crush run`) rely on to
+// are what non-interactive clients (e.g. `crusher run`) rely on to
 // terminate the run loop and guarantee final text on stdout when
 // message events arrive out of order.
 func TestRunCompleteToProto_RoundTrip(t *testing.T) {
@@ -102,7 +102,7 @@ func TestRunCompleteToProto_RoundTrip(t *testing.T) {
 			MessageID: "M",
 			Text:      "VERDICT: APPROVED",
 			Error:     "",
-			Cancelled: false,
+			Canceled:  false,
 		},
 	}
 
@@ -120,12 +120,12 @@ func TestRunCompleteToProto_RoundTrip(t *testing.T) {
 	require.Equal(t, "M", decoded.Payload.MessageID)
 	require.Equal(t, "VERDICT: APPROVED", decoded.Payload.Text)
 	require.Empty(t, decoded.Payload.Error)
-	require.False(t, decoded.Payload.Cancelled)
+	require.False(t, decoded.Payload.Canceled)
 }
 
 // TestAgentErrorToProto_PreservesRunID verifies that an async agent
 // error notification carries its originating RunID (and SessionID)
-// through the SSE envelope. Without these correlators, `crush run`
+// through the SSE envelope. Without these correlators, `crusher run`
 // cannot tell whether an error event belongs to its own run and
 // would abort on any unrelated workspace failure.
 func TestAgentErrorToProto_PreservesRunID(t *testing.T) {
@@ -157,8 +157,8 @@ func TestAgentErrorToProto_PreservesRunID(t *testing.T) {
 
 // TestRunCompleteToProto_Error verifies that error- and cancel-shaped
 // RunComplete events round-trip cleanly so clients can distinguish
-// "agent failed" (returns non-zero from `crush run`) from "agent
-// cancelled by user" (clean exit).
+// "agent failed" (returns non-zero from `crusher run`) from "agent
+// canceled by user" (clean exit).
 func TestRunCompleteToProto_Error(t *testing.T) {
 	t.Parallel()
 
@@ -169,7 +169,7 @@ func TestRunCompleteToProto_Error(t *testing.T) {
 			MessageID: "M",
 			Text:      "partial",
 			Error:     "context canceled",
-			Cancelled: true,
+			Canceled:  true,
 		},
 	}
 
@@ -178,5 +178,5 @@ func TestRunCompleteToProto_Error(t *testing.T) {
 	var decoded pubsub.Event[proto.RunComplete]
 	require.NoError(t, json.Unmarshal(env.Payload, &decoded))
 	require.Equal(t, "context canceled", decoded.Payload.Error)
-	require.True(t, decoded.Payload.Cancelled)
+	require.True(t, decoded.Payload.Canceled)
 }

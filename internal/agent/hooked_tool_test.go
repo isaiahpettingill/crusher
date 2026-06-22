@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/hooks"
-	"github.com/charmbracelet/crush/internal/permission"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/hooks"
+	"github.com/charmbracelet/crusher/internal/permission"
 	"github.com/stretchr/testify/require"
 )
 
@@ -84,7 +84,7 @@ func TestHookedTool_SilentDoesNotStampApproval(t *testing.T) {
 	// With no hook opinion, a fresh permission request has nothing stamped
 	// and must fall through to the normal flow. We verify by checking that
 	// the context does not look pre-approved for this call ID: sending a
-	// request that no subscriber resolves will block until cancelled.
+	// request that no subscriber resolves will block until canceled.
 	svc := permission.NewPermissionService(t.TempDir(), false, nil)
 	ctx, cancel := context.WithCancel(inner.gotCtx)
 	cancel()

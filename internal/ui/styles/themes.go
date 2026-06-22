@@ -1,101 +1,84 @@
 package styles
 
-import (
-	"github.com/charmbracelet/x/exp/charmtone"
-)
+import "charm.land/lipgloss/v2"
 
-// ThemeForProvider returns the Styles associated with the given provider
-// ID. Unknown or empty provider IDs yield the default Charmtone Pantera
-// theme.
+// ThemeForProvider returns the Styles associated with the given provider ID.
+// Unknown or empty provider IDs yield the default Stars and Stripes theme.
 func ThemeForProvider(providerID string) Styles {
 	switch providerID {
 	case "hyper":
-		return HypercrushObsidiana()
+		return HypercrusherObsidiana()
 	default:
-		return CharmtonePantera()
+		return StarsAndStripes()
 	}
 }
 
-// CharmtonePantera returns the Charmtone dark theme. It's the default style
-// for the UI.
-func CharmtonePantera() Styles {
-	s := quickStyle(quickStyleOpts{
-		primary:   charmtone.Charple,
-		secondary: charmtone.Dolly,
-		accent:    charmtone.Bok,
-		keyword:   charmtone.Blush,
+// StarsAndStripes returns Crusher's red, white, and blue dark theme.
+func StarsAndStripes() Styles {
+	return quickStyle(quickStyleOpts{
+		primary:   lipgloss.Color("#3c5aa6"),
+		secondary: lipgloss.Color("#b22234"),
+		accent:    lipgloss.Color("#ffffff"),
+		keyword:   lipgloss.Color("#bf0a30"),
 
-		fgBase:       charmtone.Sash,
-		fgMoreSubtle: charmtone.Squid,
-		fgSubtle:     charmtone.Smoke,
-		fgMostSubtle: charmtone.Oyster,
+		fgBase:       lipgloss.Color("#f8fafc"),
+		fgMoreSubtle: lipgloss.Color("#cbd5e1"),
+		fgSubtle:     lipgloss.Color("#e2e8f0"),
+		fgMostSubtle: lipgloss.Color("#94a3b8"),
 
-		onPrimary: charmtone.Butter,
+		onPrimary: lipgloss.Color("#ffffff"),
 
-		bgBase:         charmtone.Pepper,
-		bgLeastVisible: charmtone.BBQ,
-		bgLessVisible:  charmtone.Char,
-		bgMostVisible:  charmtone.Iron,
+		bgBase:         lipgloss.Color("#07111f"),
+		bgLeastVisible: lipgloss.Color("#0b1f3a"),
+		bgLessVisible:  lipgloss.Color("#102a4c"),
+		bgMostVisible:  lipgloss.Color("#1f3f70"),
 
-		separator: charmtone.Char,
+		separator: lipgloss.Color("#3c5aa6"),
 
-		destructive:       charmtone.Coral,
-		error:             charmtone.Sriracha,
-		warningSubtle:     charmtone.Zest,
-		warning:           charmtone.Mustard,
-		denied:            charmtone.Tang,
-		busy:              charmtone.Citron,
-		info:              charmtone.Malibu,
-		infoMoreSubtle:    charmtone.Sardine,
-		infoMostSubtle:    charmtone.Damson,
-		success:           charmtone.Julep,
-		successMoreSubtle: charmtone.Bok,
-		successMostSubtle: charmtone.Guac,
+		destructive:       lipgloss.Color("#bf0a30"),
+		error:             lipgloss.Color("#ff4d5d"),
+		warningSubtle:     lipgloss.Color("#f5c542"),
+		warning:           lipgloss.Color("#ffb703"),
+		denied:            lipgloss.Color("#b22234"),
+		busy:              lipgloss.Color("#ffffff"),
+		info:              lipgloss.Color("#60a5fa"),
+		infoMoreSubtle:    lipgloss.Color("#3c5aa6"),
+		infoMostSubtle:    lipgloss.Color("#1f3f70"),
+		success:           lipgloss.Color("#22c55e"),
+		successMoreSubtle: lipgloss.Color("#86efac"),
+		successMostSubtle: lipgloss.Color("#164e33"),
 
-		// ANSI 16-color palette for remapping raw terminal output
-		// (e.g. bang-mode shell commands) onto legible Charmtone colors.
-		ansiBlack:   charmtone.BBQ,
-		ansiRed:     charmtone.Coral,
-		ansiGreen:   charmtone.Guac,
-		ansiYellow:  charmtone.Mustard,
-		ansiBlue:    charmtone.Charple,
-		ansiMagenta: charmtone.Dolly,
-		ansiCyan:    charmtone.Malibu,
-		ansiWhite:   charmtone.Smoke,
+		ansiBlack:   lipgloss.Color("#07111f"),
+		ansiRed:     lipgloss.Color("#bf0a30"),
+		ansiGreen:   lipgloss.Color("#22c55e"),
+		ansiYellow:  lipgloss.Color("#f5c542"),
+		ansiBlue:    lipgloss.Color("#3c5aa6"),
+		ansiMagenta: lipgloss.Color("#b22234"),
+		ansiCyan:    lipgloss.Color("#60a5fa"),
+		ansiWhite:   lipgloss.Color("#f8fafc"),
 
-		ansiBrightBlack:   charmtone.Iron,
-		ansiBrightRed:     charmtone.Tuna,
-		ansiBrightGreen:   charmtone.Julep,
-		ansiBrightYellow:  charmtone.Zest,
-		ansiBrightBlue:    charmtone.Guppy,
-		ansiBrightMagenta: charmtone.Blush,
-		ansiBrightCyan:    charmtone.Sardine,
-		ansiBrightWhite:   charmtone.Salt,
+		ansiBrightBlack:   lipgloss.Color("#334155"),
+		ansiBrightRed:     lipgloss.Color("#ff4d5d"),
+		ansiBrightGreen:   lipgloss.Color("#86efac"),
+		ansiBrightYellow:  lipgloss.Color("#ffb703"),
+		ansiBrightBlue:    lipgloss.Color("#60a5fa"),
+		ansiBrightMagenta: lipgloss.Color("#ef4444"),
+		ansiBrightCyan:    lipgloss.Color("#93c5fd"),
+		ansiBrightWhite:   lipgloss.Color("#ffffff"),
 	})
-
-	// Bang ! prompt overrides - use Salt/Hazy/Larple colors.
-	s.Editor.PromptBangIconFocused = s.Editor.PromptBangIconFocused.
-		Foreground(charmtone.Salt).
-		Background(charmtone.Hazy)
-	s.Editor.PromptBangDotsFocused = s.Editor.PromptBangDotsFocused.
-		Foreground(charmtone.Hazy)
-	s.Editor.PromptBangDotsBlurred = s.Editor.PromptBangDotsBlurred.
-		Foreground(charmtone.Larple)
-
-	// Shell bar/prompt overrides - use Charple/Iron/Hazy colors.
-	s.Messages.ShellBarFocused = s.Messages.ShellBarFocused.
-		BorderForeground(charmtone.Charple)
-	s.Messages.ShellBarBlurred = s.Messages.ShellBarBlurred.
-		BorderForeground(charmtone.Iron)
-	s.Messages.ShellPrompt = s.Messages.ShellPrompt.
-		Foreground(charmtone.Hazy)
-	s.Messages.ShellPromptBlurred = s.Messages.ShellPromptBlurred.
-		Foreground(charmtone.Hazy)
-
-	return s
 }
 
-// HypercrushObsidiana returns the Hypercrush dark theme.
-func HypercrushObsidiana() Styles {
-	return CharmtonePantera()
+// CatppuccinMocha is kept for older tests and callers inside this repo.
+func CatppuccinMocha() Styles {
+	return StarsAndStripes()
+}
+
+// CharmtonePantera is kept for older tests and callers inside this repo.
+func CharmtonePantera() Styles {
+	return StarsAndStripes()
+}
+
+// HypercrusherObsidiana returns the Hypercrusher dark theme.
+func HypercrusherObsidiana() Styles {
+	return StarsAndStripes()
 }

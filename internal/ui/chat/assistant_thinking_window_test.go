@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/stretchr/testify/require"
 )
@@ -80,7 +80,7 @@ func renderedThinkingHeight(t *testing.T, item *AssistantMessageItem, width int)
 }
 
 // TestThinkingWindow_CollapsedCapPreserved guards that F5 did not
-// regress the existing collapsed-mode behaviour: a 5000-line
+// regress the existing collapsed-mode behavior: a 5000-line
 // thinking block in the default (collapsed) state still renders at
 // most a small bounded height — the last `maxCollapsedThinkingHeight`
 // lines plus the truncation hint. The thinking message keeps
@@ -148,7 +148,7 @@ func TestThinkingWindow_ExpandedShortSkipsTailWindow(t *testing.T) {
 		"a fully expanded short block must include the last source paragraph")
 }
 
-// TestThinkingWindow_TailWindowed asserts the central F5 behaviour:
+// TestThinkingWindow_TailWindowed asserts the central F5 behavior:
 // expanding a long thinking block produces a tail window of size
 // `maxExpandedThinkingTailLines` plus the affordance footer, with
 // the LAST source line present (i.e. we tailed, not headed) and

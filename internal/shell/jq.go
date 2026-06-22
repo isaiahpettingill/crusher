@@ -39,7 +39,7 @@ Options:
 //
 // ctx is polled at each iteration of the output loop and at each reader in
 // [readInputs] so that hook timeouts or other cancellations can interrupt
-// long-running queries. A cancelled context surfaces as ctx.Err(), not an
+// long-running queries. A canceled context surfaces as ctx.Err(), not an
 // [interp.ExitStatus], so callers (e.g. the hook runner) can distinguish
 // "filter exited non-zero" from "we ran out of time".
 //

@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"image/color"
 	"log/slog"
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -27,36 +29,36 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	agenttools "github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/app"
-	"github.com/charmbracelet/crush/internal/clipboard"
-	"github.com/charmbracelet/crush/internal/commands"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/fsext"
-	"github.com/charmbracelet/crush/internal/history"
-	"github.com/charmbracelet/crush/internal/home"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/skills"
-	"github.com/charmbracelet/crush/internal/stringext"
-	"github.com/charmbracelet/crush/internal/ui/anim"
-	"github.com/charmbracelet/crush/internal/ui/attachments"
-	"github.com/charmbracelet/crush/internal/ui/chat"
-	"github.com/charmbracelet/crush/internal/ui/common"
-	"github.com/charmbracelet/crush/internal/ui/completions"
-	"github.com/charmbracelet/crush/internal/ui/dialog"
-	fimage "github.com/charmbracelet/crush/internal/ui/image"
-	"github.com/charmbracelet/crush/internal/ui/logo"
-	"github.com/charmbracelet/crush/internal/ui/notification"
-	"github.com/charmbracelet/crush/internal/ui/styles"
-	"github.com/charmbracelet/crush/internal/ui/util"
-	"github.com/charmbracelet/crush/internal/version"
-	"github.com/charmbracelet/crush/internal/workspace"
+	"github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	agenttools "github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/app"
+	"github.com/charmbracelet/crusher/internal/clipboard"
+	"github.com/charmbracelet/crusher/internal/commands"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/charmbracelet/crusher/internal/home"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/charmbracelet/crusher/internal/stringext"
+	"github.com/charmbracelet/crusher/internal/ui/anim"
+	"github.com/charmbracelet/crusher/internal/ui/attachments"
+	"github.com/charmbracelet/crusher/internal/ui/chat"
+	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/charmbracelet/crusher/internal/ui/completions"
+	"github.com/charmbracelet/crusher/internal/ui/dialog"
+	fimage "github.com/charmbracelet/crusher/internal/ui/image"
+	"github.com/charmbracelet/crusher/internal/ui/logo"
+	"github.com/charmbracelet/crusher/internal/ui/notification"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/ui/util"
+	"github.com/charmbracelet/crusher/internal/version"
+	"github.com/charmbracelet/crusher/internal/workspace"
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/ultraviolet/layout"
 	"github.com/charmbracelet/ultraviolet/screen"
@@ -112,6 +114,8 @@ const (
 type openEditorMsg struct {
 	Text string
 }
+
+type flameTickMsg struct{}
 
 type shellResultMsg struct {
 	PendingID string // ID of the pending ShellItem to update.
@@ -309,6 +313,11 @@ type UI struct {
 		messages []string
 		index    int
 		draft    string
+	}
+
+	flame struct {
+		active bool
+		frame  int
 	}
 }
 
@@ -769,7 +778,7 @@ func (m *UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, cmd)
 		}
 		if cmd := m.sendNotification(notification.Notification{
-			Title:   "Crush is waiting...",
+			Title:   "Crusher is waiting...",
 			Message: fmt.Sprintf("Permission required to execute \"%s\"", msg.Payload.ToolName),
 		}); cmd != nil {
 			cmds = append(cmds, cmd)
@@ -1033,9 +1042,9 @@ func (m *UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		cmds = append(cmds, clearInfoMsgCmd(ttl))
 	case app.UpdateAvailableMsg:
-		text := fmt.Sprintf("Crush update available: v%s → v%s.", msg.CurrentVersion, msg.LatestVersion)
+		text := fmt.Sprintf("Crusher update available: v%s → v%s.", msg.CurrentVersion, msg.LatestVersion)
 		if msg.IsDevelopment {
-			text = fmt.Sprintf("This is a development version of Crush. The latest version is v%s.", msg.LatestVersion)
+			text = fmt.Sprintf("This is a development version of Crusher. The latest version is v%s.", msg.LatestVersion)
 		}
 		ttl := 10 * time.Second
 		m.status.SetInfoMsg(util.InfoMsg{
@@ -2442,7 +2451,7 @@ func (m *UI) Draw(scr uv.Screen, area uv.Rectangle) *tea.Cursor {
 	}
 
 	// Debugging rendering (visually see when the tui rerenders)
-	if os.Getenv("CRUSH_UI_DEBUG") == "true" {
+	if os.Getenv("CRUSHER_UI_DEBUG") == "true" {
 		debugView := lipgloss.NewStyle().Background(lipgloss.ANSIColor(rand.Intn(256))).Width(4).Height(2)
 		debug := uv.NewStyledString(debugView.String())
 		debug.Draw(scr, image.Rectangle{
@@ -2488,7 +2497,7 @@ func (m *UI) View() tea.View {
 	}
 	v.MouseMode = tea.MouseModeCellMotion
 	v.ReportFocus = m.caps.ReportFocusEvents
-	v.WindowTitle = "crush " + home.Short(m.com.Workspace.WorkingDir())
+	v.WindowTitle = "crusher " + home.Short(m.com.Workspace.WorkingDir())
 
 	canvas := uv.NewScreenBuffer(m.width, m.height)
 	v.Cursor = m.Draw(canvas, canvas.Bounds())
@@ -3068,7 +3077,7 @@ func (m *UI) openEditor(value string) tea.Cmd {
 		return util.ReportError(err)
 	}
 	cmd, err := editor.Command(
-		"crush",
+		"crusher",
 		tmpPath,
 		editor.AtPosition(
 			m.textarea.Line()+1,
@@ -3828,7 +3837,7 @@ func (m *UI) handleAgentNotification(n notify.Notification) tea.Cmd {
 	case notify.TypeAgentFinished:
 		var cmds []tea.Cmd
 		cmds = append(cmds, m.sendNotification(notification.Notification{
-			Title:   "Crush is waiting...",
+			Title:   "Crusher is waiting...",
 			Message: fmt.Sprintf("Agent's turn completed in \"%s\"", n.SessionTitle),
 		}))
 		if m.com.IsHyper() {
@@ -3865,6 +3874,8 @@ func (m *UI) newSession() tea.Cmd {
 	if !m.hasSession() {
 		return nil
 	}
+	m.flame.active = true
+	m.flame.frame = 0
 
 	m.session = nil
 	m.sessionFiles = nil
@@ -3886,7 +3897,77 @@ func (m *UI) newSession() tea.Cmd {
 		},
 		m.loadPromptHistory(),
 		m.reportCurrentSession(""),
+		flameTick(),
+		playHawkSound(),
 	)
+}
+
+func flameTick() tea.Cmd {
+	return tea.Tick(45*time.Millisecond, func(time.Time) tea.Msg {
+		return flameTickMsg{}
+	})
+}
+
+func playHawkSound() tea.Cmd {
+	return func() tea.Msg {
+		cwd, err := os.Getwd()
+		if err != nil {
+			return nil
+		}
+		path := filepath.Join(cwd, "hawk.mp3")
+		if _, err := os.Stat(path); err != nil {
+			return nil
+		}
+		var cmd *exec.Cmd
+		switch runtime.GOOS {
+		case "windows":
+			cmd = exec.Command("cmd", "/c", "start", "", path)
+		case "darwin":
+			cmd = exec.Command("open", path)
+		default:
+			cmd = exec.Command("xdg-open", path)
+		}
+		_ = cmd.Start()
+		return nil
+	}
+}
+
+func (m *UI) drawFlameOverlay(scr uv.Screen, area uv.Rectangle) {
+	if area.Empty() {
+		return
+	}
+	height := min(area.Dy(), 18)
+	width := area.Dx()
+	baseY := area.Max.Y - 1
+	chars := []rune(" .:-=+*#%@")
+	colors := []color.Color{
+		lipgloss.Color("#7f1d1d"),
+		lipgloss.Color("#dc2626"),
+		lipgloss.Color("#f97316"),
+		lipgloss.Color("#facc15"),
+		lipgloss.Color("#fff7ed"),
+	}
+	for y := 0; y < height; y++ {
+		var line strings.Builder
+		for x := 0; x < width; x++ {
+			heat := height - y + rand.Intn(4) - m.flame.frame
+			if (x+y+m.flame.frame)%7 == 0 {
+				heat += 3
+			}
+			if heat <= 0 {
+				line.WriteByte(' ')
+				continue
+			}
+			line.WriteRune(chars[min(heat, len(chars)-1)])
+		}
+		color := colors[min(y/4, len(colors)-1)]
+		styled := lipgloss.NewStyle().Foreground(color).Render(line.String())
+		uv.NewStyledString(styled).Draw(scr, image.Rect(area.Min.X, baseY-y, area.Max.X, baseY-y+1))
+	}
+	label := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#f97316")).Render("Previous chat incinerated")
+	x := area.Min.X + max(0, (width-lipgloss.Width(label))/2)
+	y := max(area.Min.Y, baseY-height)
+	uv.NewStyledString(label).Draw(scr, image.Rect(x, y, x+lipgloss.Width(label), y+1))
 }
 
 // checkBangModeAfterPaste engages bang mode when pasted text starts with
@@ -4258,7 +4339,7 @@ func (m *UI) disableDockerMCP() tea.Msg {
 	return util.NewInfoMsg("Docker MCP disabled successfully")
 }
 
-// renderLogo renders the Crush logo with the given styles and dimensions.
+// renderLogo renders the Crusher logo with the given styles and dimensions.
 func renderLogo(t *styles.Styles, compact, hyper bool, width int) string {
 	return logo.Render(t.Logo.GradCanvas, version.Version, compact, logo.Opts{
 		FieldColor:   t.Logo.FieldColor,

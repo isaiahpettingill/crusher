@@ -7,9 +7,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/oauth/copilot"
-	"github.com/charmbracelet/crush/internal/ui/common"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/oauth/copilot"
+	"github.com/charmbracelet/crusher/internal/ui/common"
 )
 
 func NewOAuthCopilot(
@@ -61,7 +61,7 @@ func (m *OAuthCopilot) startPolling(deviceCode string, expiresIn int) tea.Cmd {
 		token, err := copilot.PollForToken(ctx, m.deviceCode)
 		if err != nil {
 			if ctx.Err() != nil {
-				return nil // cancelled, don't report error.
+				return nil // canceled, don't report error.
 			}
 			return ActionOAuthErrored{Error: err}
 		}

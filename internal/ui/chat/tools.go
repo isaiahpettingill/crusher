@@ -10,17 +10,17 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"charm.land/lipgloss/v2/tree"
-	"github.com/charmbracelet/crush/internal/agent"
-	"github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/diff"
-	"github.com/charmbracelet/crush/internal/fsext"
-	"github.com/charmbracelet/crush/internal/hooks"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/stringext"
-	"github.com/charmbracelet/crush/internal/ui/anim"
-	"github.com/charmbracelet/crush/internal/ui/common"
-	"github.com/charmbracelet/crush/internal/ui/list"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/agent"
+	"github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/diff"
+	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/charmbracelet/crusher/internal/hooks"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/stringext"
+	"github.com/charmbracelet/crusher/internal/ui/anim"
+	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/charmbracelet/crusher/internal/ui/list"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -517,7 +517,7 @@ func pendingTool(sty *styles.Styles, name string, anim *anim.Anim, nested bool) 
 	return fmt.Sprintf("%s %s %s", icon, toolName, animView)
 }
 
-// toolEarlyStateContent handles error/cancelled/pending states before content rendering.
+// toolEarlyStateContent handles error/canceled/pending states before content rendering.
 // Returns the rendered output and true if early state was handled.
 func toolEarlyStateContent(sty *styles.Styles, opts *ToolRenderOpts, width int) (string, bool) {
 	var msg string
@@ -525,7 +525,7 @@ func toolEarlyStateContent(sty *styles.Styles, opts *ToolRenderOpts, width int) 
 	case ToolStatusError:
 		msg = toolErrorContent(sty, opts.Result, width)
 	case ToolStatusCanceled:
-		msg = sty.Tool.StateCancelled.Render("Canceled.")
+		msg = sty.Tool.StateCanceled.Render("Canceled.")
 	case ToolStatusAwaitingPermission:
 		msg = sty.Tool.StateWaiting.Render("Requesting permission...")
 	case ToolStatusRunning:
@@ -563,7 +563,7 @@ func toolIcon(sty *styles.Styles, status ToolStatus) string {
 	case ToolStatusError:
 		return sty.Tool.IconError.String()
 	case ToolStatusCanceled:
-		return sty.Tool.IconCancelled.String()
+		return sty.Tool.IconCanceled.String()
 	default:
 		return sty.Tool.IconPending.String()
 	}
@@ -1109,7 +1109,7 @@ func (t *baseToolMessageItem) formatToolForCopy() string {
 		}
 	} else if t.status == ToolStatusCanceled {
 		parts = append(parts, "### Status:")
-		parts = append(parts, "Cancelled")
+		parts = append(parts, "Canceled")
 	} else {
 		parts = append(parts, "### Status:")
 		parts = append(parts, "Pending...")

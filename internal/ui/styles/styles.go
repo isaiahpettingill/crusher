@@ -13,7 +13,7 @@ import (
 	"charm.land/glamour/v2/ansi"
 	"charm.land/lipgloss/v2"
 	"github.com/alecthomas/chroma/v2"
-	"github.com/charmbracelet/crush/internal/ui/diffview"
+	"github.com/charmbracelet/crusher/internal/ui/diffview"
 )
 
 const (
@@ -66,7 +66,7 @@ type Styles struct {
 	// basic 16-color SGR codes (red, green, blue, …) and leave the actual
 	// colors up to the terminal; without this palette they fall through
 	// to the user's terminal defaults, which are often illegible on
-	// Crush's background. Defining them here keeps output readable and
+	// Crusher's background. Defining them here keeps output readable and
 	// on-brand regardless of terminal configuration.
 	ANSI [16]color.Color
 
@@ -81,9 +81,9 @@ type Styles struct {
 		WorkingDir        lipgloss.Style // Style for current working directory
 		Separator         lipgloss.Style // Style for separator dots (•)
 		Wrapper           lipgloss.Style // Outer container for the entire header row
-		LogoGradCanvas    lipgloss.Style // Canvas for the compact "CRUSH" gradient
-		LogoGradFromColor color.Color    // "CRUSH" wordmark gradient start
-		LogoGradToColor   color.Color    // "CRUSH" wordmark gradient end
+		LogoGradCanvas    lipgloss.Style // Canvas for the compact "CRUSHER" gradient
+		LogoGradFromColor color.Color    // "CRUSHER" wordmark gradient start
+		LogoGradToColor   color.Color    // "CRUSHER" wordmark gradient end
 	}
 
 	CompactDetails struct {
@@ -161,8 +161,8 @@ type Styles struct {
 		SmallCharm         lipgloss.Style // "Charm™" label in SmallRender
 		SmallDiagonals     lipgloss.Style // Diagonal line fill in SmallRender
 		GradCanvas         lipgloss.Style // Blank canvas for gradient painting
-		SmallGradFromColor color.Color    // Small "Crush" wordmark gradient start
-		SmallGradToColor   color.Color    // Small "Crush" wordmark gradient end
+		SmallGradFromColor color.Color    // Small "Crusher" wordmark gradient start
+		SmallGradToColor   color.Color    // Small "Crusher" wordmark gradient end
 	}
 
 	// Working indicator gradient (spinners/shimmers on assistant "thinking",
@@ -284,10 +284,10 @@ type Styles struct {
 	// Tool - styles for tool call rendering
 	Tool struct {
 		// Icon styles with tool status
-		IconPending   lipgloss.Style
-		IconSuccess   lipgloss.Style
-		IconError     lipgloss.Style
-		IconCancelled lipgloss.Style
+		IconPending  lipgloss.Style
+		IconSuccess  lipgloss.Style
+		IconError    lipgloss.Style
+		IconCanceled lipgloss.Style
 
 		// Tool name styles
 		NameNormal lipgloss.Style // Top-level tool name
@@ -311,8 +311,8 @@ type Styles struct {
 		ContentLineNumber lipgloss.Style // Line numbers in code
 
 		// State message styles
-		StateWaiting   lipgloss.Style // "Waiting for tool response..."
-		StateCancelled lipgloss.Style // "Canceled."
+		StateWaiting  lipgloss.Style // "Waiting for tool response..."
+		StateCanceled lipgloss.Style // "Canceled."
 
 		// Error styles
 		ErrorTag     lipgloss.Style // ERROR tag

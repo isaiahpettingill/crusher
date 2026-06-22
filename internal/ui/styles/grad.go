@@ -9,32 +9,23 @@ import (
 	"github.com/rivo/uniseg"
 )
 
-// ForegroundGrad returns a slice of strings representing the input string
-// rendered with a horizontal gradient foreground from color1 to color2. Each
-// string in the returned slice corresponds to a grapheme cluster in the input
-// string. If bold is true, the rendered strings will be bolded.
+// ForegroundGrad returns a red-white-blue foreground ramp.
 func ForegroundGrad(base lipgloss.Style, input string, bold bool, color1, color2 color.Color) []string {
 	if input == "" {
 		return []string{""}
 	}
-	if len(input) == 1 {
-		style := base.Foreground(color1)
-		if bold {
-			style.Bold(true)
-		}
-		return []string{style.Render(input)}
-	}
+	_ = color1
+	_ = color2
 	var clusters []string
 	gr := uniseg.NewGraphemes(input)
 	for gr.Next() {
 		clusters = append(clusters, string(gr.Runes()))
 	}
-
-	ramp := lipgloss.Blend1D(len(clusters), color1, color2)
-	for i, c := range ramp {
-		style := base.Foreground(c)
+	palette := []color.Color{lipgloss.Color("#bf0a30"), lipgloss.Color("#ffffff"), lipgloss.Color("#3c5aa6")}
+	for i := range clusters {
+		style := base.Foreground(palette[i%len(palette)])
 		if bold {
-			style.Bold(true)
+			style = style.Bold(true)
 		}
 		clusters[i] = style.Render(clusters[i])
 	}
@@ -48,8 +39,7 @@ func ApplyForegroundGrad(base lipgloss.Style, input string, color1, color2 color
 		return ""
 	}
 	var o strings.Builder
-	clusters := ForegroundGrad(base, input, false, color1, color2)
-	for _, c := range clusters {
+	for _, c := range ForegroundGrad(base, input, false, color1, color2) {
 		fmt.Fprint(&o, c)
 	}
 	return o.String()
@@ -62,8 +52,7 @@ func ApplyBoldForegroundGrad(base lipgloss.Style, input string, color1, color2 c
 		return ""
 	}
 	var o strings.Builder
-	clusters := ForegroundGrad(base, input, true, color1, color2)
-	for _, c := range clusters {
+	for _, c := range ForegroundGrad(base, input, true, color1, color2) {
 		fmt.Fprint(&o, c)
 	}
 	return o.String()

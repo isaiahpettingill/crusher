@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/env"
+	"github.com/charmbracelet/crusher/internal/env"
 	"github.com/stretchr/testify/require"
 )
 
@@ -95,7 +95,7 @@ func TestResolvedEnv_RealShell_Success(t *testing.T) {
 }
 
 // TestResolvedEnv_RealShell_DoesNotMutate pins that both success and
-// failure paths leave m.Env untouched. Prior behaviour rewrote the
+// failure paths leave m.Env untouched. Prior behavior rewrote the
 // value in place on error; that was the exact mechanism that shipped
 // empty credentials to MCP servers.
 func TestResolvedEnv_RealShell_DoesNotMutate(t *testing.T) {
@@ -164,7 +164,7 @@ func TestResolvedEnv_RealShell_Deterministic(t *testing.T) {
 // bash. The silent-empty-credential class of bug is prevented by the
 // pure-function error-returning contract of ResolvedEnv, so we don't
 // rely on nounset to catch typo'd variable names. Users who want
-// strict behaviour for a required credential opt in per-reference
+// strict behavior for a required credential opt in per-reference
 // with ${VAR:?msg}; see TestResolvedEnv_RealShell_ColonQuestionIsStrict.
 func TestResolvedEnv_RealShell_UnsetExpandsEmpty(t *testing.T) {
 	t.Parallel()
@@ -172,7 +172,7 @@ func TestResolvedEnv_RealShell_UnsetExpandsEmpty(t *testing.T) {
 	m := MCPConfig{Env: map[string]string{
 		// Intentional typo: user meant $FORGEJO_TOKEN. Under the
 		// lenient default this expands to "" rather than erroring,
-		// matching bash's behaviour on bare $VAR.
+		// matching bash's behavior on bare $VAR.
 		"FORGEJO_ACCESS_TOKEN": "$FORGJO_TOKEN",
 	}}
 	got, err := m.ResolvedEnv(realShellResolver(nil))

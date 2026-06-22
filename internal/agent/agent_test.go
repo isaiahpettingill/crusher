@@ -12,9 +12,9 @@ import (
 
 	"charm.land/fantasy"
 	"charm.land/x/vcr"
-	"github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/session"
+	"github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/session"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -122,7 +122,7 @@ func TestCoderAgent(t *testing.T) {
 				require.NoError(t, err)
 
 				res, err := agent.Run(t.Context(), SessionAgentCall{
-					Prompt:          "update the main.go file by changing the print to say hello from crush",
+					Prompt:          "update the main.go file by changing the print to say hello from crusher",
 					SessionID:       session.ID,
 					MaxOutputTokens: 10000,
 				})
@@ -165,7 +165,7 @@ func TestCoderAgent(t *testing.T) {
 				mainGoPath := filepath.Join(env.workingDir, "main.go")
 				content, err := os.ReadFile(mainGoPath)
 				require.NoError(t, err)
-				require.Contains(t, strings.ToLower(string(content)), "hello from crush")
+				require.Contains(t, strings.ToLower(string(content)), "hello from crusher")
 			})
 			t.Run("bash tool", func(t *testing.T) {
 				agent, env := setupAgent(t, pair)
@@ -421,7 +421,7 @@ func TestCoderAgent(t *testing.T) {
 				require.NoError(t, err)
 
 				res, err := agent.Run(t.Context(), SessionAgentCall{
-					Prompt:          "use multiedit to change 'Hello, World!' to 'Hello, Crush!' and add a comment '// Greeting' above the fmt.Println line in main.go",
+					Prompt:          "use multiedit to change 'Hello, World!' to 'Hello, Crusher!' and add a comment '// Greeting' above the fmt.Println line in main.go",
 					SessionID:       session.ID,
 					MaxOutputTokens: 10000,
 				})
@@ -456,7 +456,7 @@ func TestCoderAgent(t *testing.T) {
 				mainGoPath := filepath.Join(env.workingDir, "main.go")
 				content, err := os.ReadFile(mainGoPath)
 				require.NoError(t, err)
-				require.Contains(t, string(content), "Hello, Crush!", "Expected file to contain 'Hello, Crush!'")
+				require.Contains(t, string(content), "Hello, Crusher!", "Expected file to contain 'Hello, Crusher!'")
 			})
 			t.Run("sourcegraph tool", func(t *testing.T) {
 				agent, env := setupAgent(t, pair)
@@ -720,7 +720,7 @@ func TestPreparePrompt_OrphanedToolUse(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create an assistant message with a tool call but no tool result —
-	// this simulates a cancelled/interrupted agent tool call.
+	// this simulates a canceled/interrupted agent tool call.
 	_, err = env.messages.Create(ctx, sess.ID, message.CreateMessageParams{
 		Role: message.Assistant,
 		Parts: []message.ContentPart{

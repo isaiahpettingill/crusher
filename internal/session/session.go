@@ -9,9 +9,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/charmbracelet/crush/internal/db"
-	"github.com/charmbracelet/crush/internal/event"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/db"
+	"github.com/charmbracelet/crusher/internal/event"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/google/uuid"
 	"github.com/zeebo/xxh3"
 )

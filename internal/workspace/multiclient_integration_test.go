@@ -8,12 +8,12 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/crush/internal/client"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/server"
-	"github.com/charmbracelet/crush/internal/workspace"
+	"github.com/charmbracelet/crusher/internal/client"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/server"
+	"github.com/charmbracelet/crusher/internal/workspace"
 	"github.com/stretchr/testify/require"
 )
 
@@ -82,7 +82,7 @@ func TestClientWorkspace_ConfigChangedRefreshesSiblingCache(t *testing.T) {
 	wsB := workspace.NewClientWorkspace(cB, *wsProtoB)
 
 	// Both clients attach event streams. They run for the
-	// lifetime of the test; cancelling via context tears them
+	// lifetime of the test; canceling via context tears them
 	// down. consumeEvents is exercised by Subscribe in production;
 	// here we run it inline so we don't need a real *tea.Program.
 	evcA, err := cA.SubscribeEvents(ctx, wsProto.ID)

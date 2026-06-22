@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/charmbracelet/crush/internal/backend"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/session"
+	"github.com/charmbracelet/crusher/internal/backend"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/session"
 	"github.com/google/uuid"
 )
 

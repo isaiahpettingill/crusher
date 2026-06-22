@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/fsext"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/ui/common"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
 )
@@ -50,9 +50,9 @@ func (h *header) refresh() {
 	if !isHyper {
 		charm = " " + charm
 	}
-	name := "CRUSH"
+	name := "CRUSHER"
 	if isHyper {
-		name = "HYPERCRUSH"
+		name = "HYPERCRUSHER"
 	}
 	h.compactLogo = t.Header.Charm.Render(charm) + " " +
 		styles.ApplyBoldForegroundGrad(t.Header.LogoGradCanvas, name, t.Header.LogoGradFromColor, t.Header.LogoGradToColor) + " "

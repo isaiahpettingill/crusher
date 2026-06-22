@@ -8,12 +8,12 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/client"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/client"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/skills"
 	"github.com/stretchr/testify/require"
 )
 

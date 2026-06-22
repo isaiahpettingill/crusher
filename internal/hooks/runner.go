@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/shell"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/shell"
 )
 
 // abandonGrace is how long runOne waits after ctx cancellation for the
@@ -155,7 +155,7 @@ func (r *Runner) matchingHooks(toolName string) []config.HookConfig {
 
 // runOne executes a single hook command and returns its result.
 //
-// Execution goes through Crush's embedded POSIX shell (shell.Run) so the
+// Execution goes through Crusher's embedded POSIX shell (shell.Run) so the
 // same interpreter, builtins, and coreutils are visible to hooks as to
 // the bash tool. BlockFuncs are intentionally omitted: hooks are
 // user-authored config that carry the same trust as a shell alias.
@@ -210,7 +210,7 @@ func (r *Runner) runOne(parentCtx context.Context, hook config.HookConfig, envVa
 	if shell.IsInterrupt(err) {
 		// Distinguish timeout from parent cancellation.
 		if parentCtx.Err() != nil {
-			slog.Debug("Hook cancelled by parent context", "command", hook.Command)
+			slog.Debug("Hook canceled by parent context", "command", hook.Command)
 		} else {
 			slog.Warn("Hook timed out", "command", hook.Command, "timeout", timeout)
 		}

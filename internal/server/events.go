@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/app"
-	"github.com/charmbracelet/crush/internal/backend"
-	"github.com/charmbracelet/crush/internal/history"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/app"
+	"github.com/charmbracelet/crusher/internal/backend"
+	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/skills"
 )
 
 // wrapEvent converts a raw tea.Msg (a pubsub.Event[T] from the app
@@ -109,7 +109,7 @@ func wrapEvent(ev any) *pubsub.Payload {
 				MessageID: e.Payload.MessageID,
 				Text:      e.Payload.Text,
 				Error:     e.Payload.Error,
-				Cancelled: e.Payload.Cancelled,
+				Canceled:  e.Payload.Canceled,
 			},
 		})
 	case pubsub.Event[proto.ConfigChanged]:

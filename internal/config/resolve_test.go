@@ -6,13 +6,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/env"
+	"github.com/charmbracelet/crusher/internal/env"
 	"github.com/stretchr/testify/require"
 )
 
 // fakeExpander returns a canned value/error for the last passed value and
 // records the context, raw value, and env slice it was called with. It
-// lets the config-layer tests assert on delegation behaviour without
+// lets the config-layer tests assert on delegation behavior without
 // spinning up a real interpreter — real-shell coverage lives in
 // internal/shell/expand_test.go and resolve_real_test.go.
 type fakeExpander struct {
@@ -61,7 +61,7 @@ func TestShellVariableResolver_LoneDollarIsError(t *testing.T) {
 	// Lone "$" must short-circuit before reaching the expander: the
 	// underlying shell parser would accept it as a literal, but this
 	// resolver has historically rejected it and callers depend on
-	// that early-fail behaviour.
+	// that early-fail behavior.
 	fe := &fakeExpander{}
 	r := NewShellVariableResolver(env.NewFromMap(nil), WithExpander(fe.Expand))
 

@@ -13,10 +13,10 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/fsext"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/shell"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/shell"
 )
 
 type BashParams struct {
@@ -333,7 +333,7 @@ func NewBashTool(permissions permission.Service, workingDir string, attribution 
 					stdout, stderr, done, execErr = bgShell.GetOutput()
 					break waitLoop
 				case <-ctx.Done():
-					// Incoming context was cancelled before we moved to background
+					// Incoming context was canceled before we moved to background
 					// Kill the shell and return error
 					bgManager.Kill(bgShell.ID)
 					return fantasy.ToolResponse{}, ctx.Err()

@@ -1,77 +1,92 @@
-# Crush
+# Crusher
 
-<p align="center">
-    <a href="https://stuff.charm.sh/crush/charm-crush.png"><img width="450" alt="Charm Crush Logo" src="https://github.com/user-attachments/assets/cf8ca3ce-8b02-43f0-9d0f-5a331488da4b" /></a><br />
-    <a href="https://github.com/charmbracelet/crush/releases"><img src="https://img.shields.io/github/release/charmbracelet/crush" alt="Latest Release"></a>
-    <a href="https://github.com/charmbracelet/crush/actions"><img src="https://github.com/charmbracelet/crush/actions/workflows/build.yml/badge.svg" alt="Build Status"></a>
-</p>
+![Chuck](./chuck.png)
 
-<p align="center">Your new coding bestie, now available in your favourite terminal.<br />Your tools, your code, and your workflows, wired into your LLM of choice.</p>
-<p align="center">终端里的编程新搭档，<br />无缝接入你的工具、代码与工作流，全面兼容主流 LLM 模型。</p>
+Crusher is a hard-nosed terminal AI coding assistant. Your tools, your code,
+and your workflow stay under your command while the model does the heavy
+lifting.
 
-<p align="center"><img width="800" alt="Crush Demo" src="https://github.com/user-attachments/assets/58280caf-851b-470a-b6f7-d5c4ea8a1968" /></p>
+Eagles up. American flags flying.
+
+In loving memory of Chuck Norris.
+
+Crusher is free and open source. Free as in rule of law, not of men.
+
+We support the rights of all people from all walks of life.
+
+Good luck y'all.
+
+A humble salute and thank you to the Charmbracelet folks who made Crush, the
+inspiration for this America 250 themed coding agent harness.
 
 ## Features
 
-- **Multi-Model:** choose from a wide range of LLMs or add your own via OpenAI- or Anthropic-compatible APIs
-- **Flexible:** switch LLMs mid-session while preserving context
-- **Session-Based:** maintain multiple work sessions and contexts per project
-- **LSP-Enhanced:** Crush uses LSPs for additional context, just like you do
-- **Extensible:** add capabilities via MCPs (`http`, `stdio`, and `sse`)
-- **Works Everywhere:** first-class support in every terminal on macOS, Linux, Windows (PowerShell and WSL), Android, FreeBSD, OpenBSD, and NetBSD
-- **Industrial Grade:** built on the Charm ecosystem, powering 25k+ applications, from leading open source projects to business-critical infrastructure
+- **Multi-Model:** choose from a wide range of LLMs or add your own via OpenAI- or Anthropic-compatible APIs.
+- **Flexible:** switch LLMs mid-session while preserving context.
+- **Session-Based:** maintain multiple work sessions and contexts per project.
+- **LSP-Enhanced:** Crusher uses LSPs for additional context, just like you do.
+- **Extensible:** add capabilities via MCPs (`http`, `stdio`, and `sse`).
+- **Works Everywhere:** first-class support in every terminal on macOS, Linux, Windows, Android, FreeBSD, OpenBSD, and NetBSD.
+- **Industrial Grade:** built for serious work on real codebases.
+- **Provider Policy:** defaults target local models, US-hosted providers, and US-allied providers.
 
 ## Installation
 
-Use a package manager:
+Build and install from this repo:
+
+```bash
+go install github.com/charmbracelet/crusher@latest
+```
+
+Or use a package manager when packages are available:
 
 ```bash
 # Homebrew
-brew install charmbracelet/tap/crush
+brew install charmbracelet/tap/crusher
 
 # NPM
-npm install -g @charmland/crush
+npm install -g @charmland/crusher
 
-# Arch Linux (btw)
-yay -S crush-bin
+# Arch Linux
+yay -S crusher-bin
 
 # Nix
-nix run github:numtide/nix-ai-tools#crush
+nix run github:numtide/nix-ai-tools#crusher
 
 # FreeBSD
-pkg install crush
+pkg install crusher
 ```
 
 Windows users:
 
 ```bash
 # Winget
-winget install charmbracelet.crush
+winget install charmbracelet.crusher
 
 # Scoop
 scoop bucket add charm https://github.com/charmbracelet/scoop-bucket.git
-scoop install crush
+scoop install crusher
 ```
 
 <details>
 <summary><strong>Nix (NUR)</strong></summary>
 
-Crush is available via the official Charm [NUR](https://github.com/nix-community/NUR) in `nur.repos.charmbracelet.crush`, which is the most up-to-date way to get Crush in Nix.
+Crusher is available via the official Charm [NUR](https://github.com/nix-community/NUR) in `nur.repos.charmbracelet.crusher`, which is the most up-to-date way to get Crusher in Nix.
 
-You can also try out Crush via the NUR with `nix-shell`:
+You can also try out Crusher via the NUR with `nix-shell`:
 
 ```bash
 # Add the NUR channel.
 nix-channel --add https://github.com/nix-community/NUR/archive/main.tar.gz nur
 nix-channel --update
 
-# Get Crush in a Nix shell.
-nix-shell -p '(import <nur> { pkgs = import <nixpkgs> {}; }).repos.charmbracelet.crush'
+# Get Crusher in a Nix shell.
+nix-shell -p '(import <nur> { pkgs = import <nixpkgs> {}; }).repos.charmbracelet.crusher'
 ```
 
 ### NixOS & Home Manager Module Usage via NUR
 
-Crush provides NixOS and Home Manager modules via NUR.
+Crusher provides NixOS and Home Manager modules via NUR.
 You can use these modules directly in your flake by importing them from NUR. Since it auto detects whether its a home manager or nixos context you can use the import the exact same way :)
 
 ```nix
@@ -86,9 +101,9 @@ You can use these modules directly in your flake by importing them from NUR. Sin
       system = "x86_64-linux";
       modules = [
         nur.modules.nixos.default
-        nur.repos.charmbracelet.modules.crush
+        nur.repos.charmbracelet.modules.crusher
         {
-          programs.crush = {
+          programs.crusher = {
             enable = true;
             settings = {
               providers = {
@@ -133,7 +148,7 @@ You can use these modules directly in your flake by importing them from NUR. Sin
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
 echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-sudo apt update && sudo apt install crush
+sudo apt update && sudo apt install crusher
 ```
 
 </details>
@@ -148,7 +163,7 @@ baseurl=https://repo.charm.sh/yum/
 enabled=1
 gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
-sudo yum install crush
+sudo yum install crusher
 ```
 
 </details>
@@ -158,24 +173,15 @@ Or, download it:
 - [Packages][releases] are available in Debian and RPM formats
 - [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
 
-[releases]: https://github.com/charmbracelet/crush/releases
+[releases]: https://github.com/charmbracelet/crusher/releases
 
-Or just install it with Go:
-
-```
-go install github.com/charmbracelet/crush@latest
-```
-
-> [!WARNING]
-> Productivity may increase when using Crush and you may find yourself nerd
-> sniped when first using the application. If the symptoms persist, join the
-> [Slack][slack] or [Discord][discord] and nerd snipe the rest of us.
+Run `crusher` after installation.
 
 ## Getting Started
 
 The quickest way to get started is to grab an API key for your preferred
 provider such as Anthropic, OpenAI, Groq, OpenRouter, or Vercel AI Gateway and just start
-Crush. You'll be prompted to enter your API key.
+Crusher. You'll be prompted to enter your API key.
 
 That said, you can also set environment variables for preferred providers.
 
@@ -184,16 +190,15 @@ That said, you can also set environment variables for preferred providers.
 | `HYPER_API_KEY`             | Charm Hyper                                        |
 | `ANTHROPIC_API_KEY`         | Anthropic                                          |
 | `OPENAI_API_KEY`            | OpenAI                                             |
+| `FIREWORKS_API_KEY`         | Fireworks AI                                      |
+| `TOGETHER_API_KEY`          | Together AI                                       |
 | `VERCEL_API_KEY`            | Vercel AI Gateway                                  |
 | `GEMINI_API_KEY`            | Google Gemini                                      |
 | `SYNTHETIC_API_KEY`         | Synthetic                                          |
-| `ZAI_API_KEY`               | Z.ai                                               |
-| `MINIMAX_API_KEY`           | MiniMax                                            |
 | `HF_TOKEN`                  | Hugging Face Inference                             |
 | `CEREBRAS_API_KEY`          | Cerebras                                           |
 | `OPENROUTER_API_KEY`        | OpenRouter                                         |
 | `IONET_API_KEY`             | io.net                                             |
-| `ALIBABA_SINGAPORE_API_KEY` | Alibaba (Singapore)                                |
 | `GROQ_API_KEY`              | Groq                                               |
 | `AVIAN_API_KEY`             | Avian                                              |
 | `OPENCODE_API_KEY`          | OpenCode Zen & Go                                  |
@@ -208,37 +213,49 @@ That said, you can also set environment variables for preferred providers.
 | `AZURE_OPENAI_API_KEY`      | Azure OpenAI models (optional when using Entra ID) |
 | `AZURE_OPENAI_API_VERSION`  | Azure OpenAI models                                |
 
+### Hosted API Providers
+
+Crusher supports hosted API providers such as OpenAI, Anthropic, Google Gemini,
+AWS Bedrock, Azure OpenAI, Fireworks AI, Together AI, Groq, Cerebras,
+OpenRouter, and Vercel AI Gateway.
+
 ### Subscriptions
 
-If you prefer subscription-based usage, here are some plans that work well in
-Crush:
+If you prefer subscription-based usage, ChatGPT Codex login is available with:
 
-- [Synthetic](https://synthetic.new/pricing)
-- [GLM Coding Plan](https://z.ai/subscribe)
-- [Kimi Code](https://www.kimi.com/membership/pricing)
-- [MiniMax Coding Plan](https://platform.minimax.io/subscribe/coding-plan)
+- [OpenAI ChatGPT plans](https://openai.com/chatgpt/pricing/)
 
-### By the Way
+### Local Models
 
-Is there a provider you’d like to see in Crush? Is there an existing model that needs an update?
+Crusher supports local OpenAI-compatible model servers, including Ollama, LM
+Studio, OMLX, and llama.cpp. Configure llama.cpp as a custom provider with
+`type: "llama.cpp"` and your local server URL.
 
-Crush’s default model listing is managed in [Catwalk](https://github.com/charmbracelet/catwalk), a community-supported, open source repository of Crush-compatible models, and you’re welcome to contribute.
+### Default Provider Policy
 
-<a href="https://github.com/charmbracelet/catwalk"><img width="174" height="174" alt="Catwalk Badge" src="https://github.com/user-attachments/assets/95b49515-fe82-4409-b10d-5beb0873787d" /></a>
+Crusher's built-in provider list is filtered to local models, US-hosted
+providers, and US-allied providers. Alibaba Cloud, Zhipu AI/Z.ai, DeepSeek, and
+similar providers are not enabled by default.
+
+### Model Catalog
+
+Is there a provider you'd like to see in Crusher? Is there an existing model that needs an update?
+
+Crusher's default model listing is managed in [Catwalk](https://github.com/charmbracelet/catwalk), a community-supported, open source repository of Crusher-compatible models.
 
 ## Configuration
 
 > [!TIP]
-> Crush ships with a builtin `crush-config` skill for configuring itself. In
-> many cases you can simply ask Crush to configure itself.
+> Crusher ships with a builtin `crusher-config` skill for configuring itself. In
+> many cases you can simply ask Crusher to configure itself.
 
-Crush runs great with no configuration. That said, if you do need or want to
-customize Crush, configuration can be added either local to the project itself,
+Crusher runs great with no configuration. That said, if you do need or want to
+customize Crusher, configuration can be added either local to the project itself,
 or globally, with the following priority:
 
-1. `.crush.json`
-2. `crush.json`
-3. `$HOME/.config/crush/crush.json`
+1. `.crusher.json`
+2. `crusher.json`
+3. `$HOME/.config/crusher/crusher.json`
 
 Configuration itself is stored as a JSON object:
 
@@ -249,31 +266,31 @@ Configuration itself is stored as a JSON object:
 }
 ```
 
-As an additional note, Crush also stores ephemeral data, such as application
+As an additional note, Crusher also stores ephemeral data, such as application
 state, in one additional location:
 
 ```bash
 # Unix
-$HOME/.local/share/crush/crush.json
+$HOME/.local/share/crusher/crusher.json
 
 # Windows
-%LOCALAPPDATA%\crush\crush.json
+%LOCALAPPDATA%\crusher\crusher.json
 ```
 
 > [!TIP]
 > You can override the user and data config locations by setting:
 >
-> - `CRUSH_GLOBAL_CONFIG`
-> - `CRUSH_GLOBAL_DATA`
+> - `CRUSHER_GLOBAL_CONFIG`
+> - `CRUSHER_GLOBAL_DATA`
 
 ### LSPs
 
-Crush can use LSPs for additional context to help inform its decisions, just
+Crusher can use LSPs for additional context to help inform its decisions, just
 like you would. LSPs can be added manually like so:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "lsp": {
     "go": {
       "command": "gopls",
@@ -294,14 +311,14 @@ like you would. LSPs can be added manually like so:
 
 ### MCPs
 
-Crush also supports Model Context Protocol (MCP) servers through three transport
+Crusher also supports Model Context Protocol (MCP) servers through three transport
 types: `stdio` for command-line servers, `http` for HTTP endpoints, and `sse`
 for Server-Sent Events.
 
 Shell-style value expansion (`$VAR`, `${VAR:-default}`, `$(command)`, quoting,
 nesting) works in `command`, `args`, `env`, `headers`, and `url`, so
 file-based secrets work out of the box. You can use values like `"$TOKEN"`
-or `"$(cat /path/to/secret/token)"`. Expansion runs through Crush's embedded
+or `"$(cat /path/to/secret/token)"`. Expansion runs through Crusher's embedded
 shell, so the same syntax works on every supported system, Windows included.
 
 Unset variables expand to the empty string by default, matching bash. For
@@ -321,13 +338,13 @@ Provider `extra_body` is a non-expanding JSON passthrough; put env-driven
 values in `extra_headers` or the provider's `api_key` / `base_url`, all of
 which do expand.
 
-> **Security note:** `crush.json` is trusted code. Any `$(...)` in it runs at
+> **Security note:** `crusher.json` is trusted code. Any `$(...)` in it runs at
 > load time with your shell's privileges, before the UI appears. Don't launch
-> Crush in a directory whose `crush.json` you haven't reviewed.
+> Crusher in a directory whose `crusher.json` you haven't reviewed.
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "mcp": {
     "filesystem": {
       "type": "stdio",
@@ -365,13 +382,13 @@ which do expand.
 
 ### Hooks
 
-Crush has preliminary support for hooks. For details, see
+Crusher has preliminary support for hooks. For details, see
 [the hook guide](./docs/hooks/).
 
 ### Sharing a workspace across clients
 
-When Crush is run against a shared backend (for example two TUIs talking to
-the same `crush serve`), clients are grouped into **workspaces** keyed by
+When Crusher is run against a shared backend (for example two TUIs talking to
+the same `crusher serve`), clients are grouped into **workspaces** keyed by
 their resolved `--cwd`. Two clients with the same `--cwd` join the same
 underlying workspace, so they share the session list, message history,
 permission queue, LSP, and MCP state.
@@ -404,13 +421,13 @@ does not get reaped before it can attach.
 
 ### Global context files
 
-Crush automatically includes two files for cross-project instructions.
+Crusher automatically includes two files for cross-project instructions.
 
-- `~/.config/crush/CRUSH.md`: Crush-specific rules that would confuse other
-  agentic coding tools. If you only use Crush, this is the only one you need to
+- `~/.config/crusher/CRUSHER.md`: Crusher-specific rules that would confuse other
+  agentic coding tools. If you only use Crusher, this is the only one you need to
   edit.
 - `~/.config/AGENTS.md`: generic instructions that other coding tools might
-  read. Avoid referring to Crush-specific features or workflows here. You
+  read. Avoid referring to Crusher-specific features or workflows here. You
   probably only care about this if you use multiple agentic coding tools and
   want to share instructions between them.
 
@@ -419,7 +436,7 @@ configuration:
 
 ```jsonc
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "global_context_paths": [
       "~/path/to/custom/context/file.md",
@@ -431,23 +448,23 @@ configuration:
 
 ### Ignoring Files
 
-Crush respects `.gitignore` files by default, but you can also create a
-`.crushignore` file to specify additional files and directories that Crush
+Crusher respects `.gitignore` files by default, but you can also create a
+`.crusherignore` file to specify additional files and directories that Crusher
 should ignore. This is useful for excluding files that you want in version
-control but don't want Crush to consider when providing context.
+control but don't want Crusher to consider when providing context.
 
-The `.crushignore` file uses the same syntax as `.gitignore` and can be placed
+The `.crusherignore` file uses the same syntax as `.gitignore` and can be placed
 in the root of your project or in subdirectories.
 
 ### Allowing Tools
 
-By default, Crush will ask you for permission before running tool calls. If
+By default, Crusher will ask you for permission before running tool calls. If
 you'd like, you can allow tools to be executed without prompting you for
 permissions. Use this with care.
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "permissions": {
     "allowed_tools": [
       "view",
@@ -460,18 +477,18 @@ permissions. Use this with care.
 }
 ```
 
-You can also skip all permission prompts entirely by running Crush with the
+You can also skip all permission prompts entirely by running Crusher with the
 `--yolo` flag. Be very, very careful with this feature.
 
 ### Disabling Built-In Tools
 
-If you'd like to prevent Crush from using certain built-in tools entirely, you
+If you'd like to prevent Crusher from using certain built-in tools entirely, you
 can disable them via the `options.disabled_tools` list. Disabled tools are
 completely hidden from the agent.
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "disabled_tools": ["bash", "sourcegraph"]
   }
@@ -482,52 +499,52 @@ To disable tools from MCP servers, see the [MCP config section](#mcps).
 
 ### Disabling Skills
 
-If you'd like to prevent Crush from using certain skills entirely, you can
+If you'd like to prevent Crusher from using certain skills entirely, you can
 disable them via the `options.disabled_skills` list. Disabled skills are hidden
 from the agent, including builtin skills and skills discovered from disk.
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
-    "disabled_skills": ["crush-config"]
+    "disabled_skills": ["crusher-config"]
   }
 }
 ```
 
 ### Agent Skills
 
-Crush supports the [Agent Skills](https://agentskills.io) open standard for
+Crusher supports the [Agent Skills](https://agentskills.io) open standard for
 extending agent capabilities with reusable skill packages. Skills are folders
-containing a `SKILL.md` file with instructions that Crush can discover and
+containing a `SKILL.md` file with instructions that Crusher can discover and
 activate on demand.
 
 The global paths we looks for skills are:
 
-* `$CRUSH_SKILLS_DIR`
+* `$CRUSHER_SKILLS_DIR`
 * `$XDG_CONFIG_HOME/agents/skills` or `~/.config/agents/skills/`
-* `$XDG_CONFIG_HOME/crush/skills` or `~/.config/crush/skills/`
+* `$XDG_CONFIG_HOME/crusher/skills` or `~/.config/crusher/skills/`
 * `~/.agents/skills/`
 * `~/.claude/skills/`
 * On Windows, we _also_ look at
   * `%LOCALAPPDATA%\agents\skills\` or `%USERPROFILE%\AppData\Local\agents\skills\`
-  * `%LOCALAPPDATA%\crush\skills\` or `%USERPROFILE%\AppData\Local\crush\skills\`
+  * `%LOCALAPPDATA%\crusher\skills\` or `%USERPROFILE%\AppData\Local\crusher\skills\`
 * Additional paths configured via `options.skills_paths`
 
 On top of that, we _also_ load skills in your project from the following
 relative paths:
 
 * `.agents/skills`
-* `.crush/skills`
+* `.crusher/skills`
 * `.claude/skills`
 * `.cursor/skills`
 
 ```jsonc
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "skills_paths": [
-      "~/.config/crush/skills", // Windows: "%LOCALAPPDATA%\\crush\\skills",
+      "~/.config/crusher/skills", // Windows: "%LOCALAPPDATA%\\crusher\\skills",
       "./project-skills",
     ],
   },
@@ -538,16 +555,16 @@ You can get started with example skills from [anthropics/skills](https://github.
 
 ```bash
 # Unix
-mkdir -p ~/.config/crush/skills
-cd ~/.config/crush/skills
+mkdir -p ~/.config/crusher/skills
+cd ~/.config/crusher/skills
 git clone https://github.com/anthropics/skills.git _temp
 mv _temp/skills/* . && rm -rf _temp
 ```
 
 ```powershell
 # Windows (PowerShell)
-mkdir -Force "$env:LOCALAPPDATA\crush\skills"
-cd "$env:LOCALAPPDATA\crush\skills"
+mkdir -Force "$env:LOCALAPPDATA\crusher\skills"
+cd "$env:LOCALAPPDATA\crusher\skills"
 git clone https://github.com/anthropics/skills.git _temp
 mv _temp/skills/* . ; rm -r -force _temp
 ```
@@ -585,13 +602,13 @@ Skills with `disable-model-invocation` won't appear in the model's available ski
 
 ### Desktop notifications
 
-Crush sends desktop notifications when a tool call requires permission and when
+Crusher sends desktop notifications when a tool call requires permission and when
 the agent finishes its turn. They're only sent when the terminal window isn't
 focused _and_ your terminal supports reporting the focus state.
 
 ```jsonc
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "disable_notifications": false, // default
   },
@@ -604,14 +621,14 @@ limitations.
 
 ### Initialization
 
-When you initialize a project, Crush analyzes your codebase and creates
+When you initialize a project, Crusher analyzes your codebase and creates
 a context file that helps it work more effectively in future sessions.
 By default, this file is named `AGENTS.md`, but you can customize the
 name and location with the `initialize_as` option:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "initialize_as": "AGENTS.md"
   }
@@ -619,19 +636,19 @@ name and location with the `initialize_as` option:
 ```
 
 This is useful if you prefer a different naming convention or want to
-place the file in a specific directory (e.g., `CRUSH.md` or
-`docs/LLMs.md`). Crush will fill the file with project-specific context
+place the file in a specific directory (e.g., `CRUSHER.md` or
+`docs/LLMs.md`). Crusher will fill the file with project-specific context
 like build commands, code patterns, and conventions it discovered during
 initialization.
 
 ### Attribution Settings
 
-By default, Crush adds attribution information to Git commits and pull requests
+By default, Crusher adds attribution information to Git commits and pull requests
 it creates. You can customize this behavior with the `attribution` option:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "attribution": {
       "trailer_style": "co-authored-by",
@@ -643,15 +660,15 @@ it creates. You can customize this behavior with the `attribution` option:
 
 - `trailer_style`: Controls the attribution trailer added to commit messages
   (default: `assisted-by`)
-  - `assisted-by`: Adds `Assisted-by: Crush:[ModelID]` as specified in [the convention](https://docs.kernel.org/process/coding-assistants.html#attribution)
-  - `co-authored-by`: Adds `Co-Authored-By: Crush <crush@charm.land>`
+  - `assisted-by`: Adds `Assisted-by: Crusher:[ModelID]` as specified in [the convention](https://docs.kernel.org/process/coding-assistants.html#attribution)
+  - `co-authored-by`: Adds `Co-Authored-By: Crusher <crusher@charm.land>`
   - `none`: No attribution trailer
-- `generated_with`: When true (default), adds `💘 Generated with Crush` line to
+- `generated_with`: When true (default), adds `💘 Generated with Crusher` line to
   commit messages and PR descriptions
 
 ### Custom Providers
 
-Crush supports custom provider configurations for both OpenAI-compatible and
+Crusher supports custom provider configurations for both OpenAI-compatible and
 Anthropic-compatible APIs.
 
 > [!NOTE]
@@ -668,7 +685,7 @@ API. Don't forget to set `DEEPSEEK_API_KEY` in your environment.
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "providers": {
     "deepseek": {
       "type": "openai-compat",
@@ -697,7 +714,7 @@ Custom Anthropic-compatible providers follow this format:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "providers": {
     "custom-anthropic": {
       "type": "anthropic",
@@ -727,11 +744,11 @@ Custom Anthropic-compatible providers follow this format:
 
 ### Amazon Bedrock
 
-Crush currently supports running Anthropic models through Bedrock, with caching disabled.
+Crusher currently supports running Anthropic models through Bedrock, with caching disabled.
 
 - A Bedrock provider will appear once you have AWS configured, i.e. `aws configure`
-- Crush also expects the `AWS_REGION` or `AWS_DEFAULT_REGION` to be set
-- To use a specific AWS profile set `AWS_PROFILE` in your environment, i.e. `AWS_PROFILE=myprofile crush`
+- Crusher also expects the `AWS_REGION` or `AWS_DEFAULT_REGION` to be set
+- To use a specific AWS profile set `AWS_PROFILE` in your environment, i.e. `AWS_PROFILE=myprofile crusher`
 - Alternatively to `aws configure`, you can also just set `AWS_BEARER_TOKEN_BEDROCK`
 
 ### Vertex AI Platform
@@ -746,7 +763,7 @@ To add specific models to the configuration, configure as such:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "providers": {
     "vertexai": {
       "models": [
@@ -770,9 +787,9 @@ To add specific models to the configuration, configure as such:
 
 ### Local Models
 
-Crush can auto-discovers models from local providers. Add a custom provider
+Crusher can auto-discovers models from local providers. Add a custom provider
 with `type` set to `omlx`, `lmstudio`, `litellm`, or `ollama` and leave out
-the models list. Crush will populate the model list automatically.
+the models list. Crusher will populate the model list automatically.
 
 ```json
 {
@@ -817,28 +834,28 @@ by auto-discovery. Auto discovery will run if the model list is empty for any
 
 ## Logging
 
-Sometimes you need to look at logs. Luckily, Crush logs all sorts of
-stuff. Logs are stored in `./.crush/logs/crush.log` relative to the project.
+Sometimes you need to look at logs. Luckily, Crusher logs all sorts of
+stuff. Logs are stored in `./.crusher/logs/crusher.log` relative to the project.
 
 The CLI also contains some helper commands to make perusing recent logs easier:
 
 ```bash
 # Print the last 1000 lines
-crush logs
+crusher logs
 
 # Print the last 500 lines
-crush logs --tail 500
+crusher logs --tail 500
 
 # Follow logs in real time
-crush logs --follow
+crusher logs --follow
 ```
 
-Want more logging? Run `crush` with the `--debug` flag, or enable it in the
+Want more logging? Run `crusher` with the `--debug` flag, or enable it in the
 config:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "debug": true,
     "debug_lsp": true
@@ -848,10 +865,10 @@ config:
 
 ## Provider Auto-Updates
 
-By default, Crush automatically checks for the latest and greatest list of
+By default, Crusher automatically checks for the latest and greatest list of
 providers and models from [Catwalk](https://github.com/charmbracelet/catwalk),
-the open source Crush provider database. This means that when new providers and
-models are available, or when model metadata changes, Crush automatically
+the open source Crusher provider database. This means that when new providers and
+models are available, or when model metadata changes, Crusher automatically
 updates your local configuration.
 
 ### Disabling automatic provider updates
@@ -861,60 +878,60 @@ air-gapped environments, this might not be want you want, and this feature can
 be disabled.
 
 To disable automatic provider updates, set `disable_provider_auto_update` into
-your `crush.json` config:
+your `crusher.json` config:
 
 ```json
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://charm.land/crusher.json",
   "options": {
     "disable_provider_auto_update": true
   }
 }
 ```
 
-Or set the `CRUSH_DISABLE_PROVIDER_AUTO_UPDATE` environment variable:
+Or set the `CRUSHER_DISABLE_PROVIDER_AUTO_UPDATE` environment variable:
 
 ```bash
-export CRUSH_DISABLE_PROVIDER_AUTO_UPDATE=1
+export CRUSHER_DISABLE_PROVIDER_AUTO_UPDATE=1
 ```
 
 ### Manually updating providers
 
-Manually updating providers is possible with the `crush update-providers`
+Manually updating providers is possible with the `crusher update-providers`
 command:
 
 ```bash
 # Update providers remotely from Catwalk.
-crush update-providers
+crusher update-providers
 
 # Update providers from a custom Catwalk base URL.
-crush update-providers https://example.com/
+crusher update-providers https://example.com/
 
 # Update providers from a local file.
-crush update-providers /path/to/local-providers.json
+crusher update-providers /path/to/local-providers.json
 
-# Reset providers to the embedded version, embedded at crush at build time.
-crush update-providers embedded
+# Reset providers to the embedded version, embedded at crusher at build time.
+crusher update-providers embedded
 
 # For more info:
-crush update-providers --help
+crusher update-providers --help
 ```
 
 ## Metrics
 
-Crush records pseudonymous usage metrics (tied to a device-specific hash),
+Crusher records pseudonymous usage metrics (tied to a device-specific hash),
 which maintainers rely on to inform development and support priorities. The
 metrics include solely usage metadata; prompts and responses are NEVER
 collected.
 
-Details on exactly what’s collected are in the source code ([here](https://github.com/charmbracelet/crush/tree/main/internal/event)
-and [here](https://github.com/charmbracelet/crush/blob/main/internal/llm/agent/event.go)).
+Details on exactly what’s collected are in the source code ([here](https://github.com/charmbracelet/crusher/tree/main/internal/event)
+and [here](https://github.com/charmbracelet/crusher/blob/main/internal/llm/agent/event.go)).
 
 You can opt out of metrics collection at any time by setting the environment
 variable by setting the following in your environment:
 
 ```bash
-export CRUSH_DISABLE_METRICS=1
+export CRUSHER_DISABLE_METRICS=1
 ```
 
 Or by setting the following in your config:
@@ -927,7 +944,7 @@ Or by setting the following in your config:
 }
 ```
 
-Crush also respects the [`DO_NOT_TRACK`](https://donottrack.sh/) convention
+Crusher also respects the [`DO_NOT_TRACK`](https://donottrack.sh/) convention
 which can be enabled via `export DO_NOT_TRACK=1`.
 
 ## Q&A
@@ -945,11 +962,11 @@ Installing an extra tool might be needed on Unix-like environments.
 
 ## Contributing
 
-See the [contributing guide](https://github.com/charmbracelet/crush?tab=contributing-ov-file#contributing).
+See the [contributing guide](https://github.com/charmbracelet/crusher?tab=contributing-ov-file#contributing).
 
-## Whatcha think?
+## Feedback
 
-We’d love to hear your thoughts on this project. Need help? We gotchu. You can find us on:
+Need help or want to report an issue? Use the repository issues or community channels:
 
 - [Twitter](https://twitter.com/charmcli)
 - [Slack][slack]
@@ -962,13 +979,11 @@ We’d love to hear your thoughts on this project. Need help? We gotchu. You can
 
 ## License
 
-[FSL-1.1-MIT](https://github.com/charmbracelet/crush/raw/main/LICENSE.md)
+[FSL-1.1-MIT](https://github.com/charmbracelet/crusher/raw/main/LICENSE.md)
 
 ---
 
 Part of [Charm](https://charm.land).
-
-<a href="https://charm.land/"><img alt="The Charm logo" width="400" src="https://stuff.charm.sh/charm-banner-softy.jpg" /></a>
 
 <!--prettier-ignore-->
 Charm热爱开源 • Charm loves open source

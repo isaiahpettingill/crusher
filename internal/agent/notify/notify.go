@@ -41,7 +41,7 @@ type Notification struct {
 // message.Service.FlushAll. Carries the final assistant text and
 // message ID so non-interactive clients can reconcile stdout even if
 // SSE events arrive out of order or are dropped by the broker. Error
-// is non-empty when the run terminated with an error; Cancelled is
+// is non-empty when the run terminated with an error; Canceled is
 // true when the run terminated due to context cancellation. The two
 // are mutually exclusive in the success case but may overlap when a
 // cancel triggers a downstream error.
@@ -59,5 +59,5 @@ type RunComplete struct {
 	MessageID string
 	Text      string
 	Error     string
-	Cancelled bool
+	Canceled  bool
 }

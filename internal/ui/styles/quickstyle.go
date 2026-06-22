@@ -10,7 +10,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2/ansi"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/ui/diffview"
+	"github.com/charmbracelet/crusher/internal/ui/diffview"
 	"github.com/charmbracelet/x/exp/charmtone"
 )
 
@@ -618,7 +618,7 @@ func quickStyle(o quickStyleOpts) Styles {
 	s.Tool.IconPending = base.Foreground(o.successMostSubtle).SetString(ToolPending)
 	s.Tool.IconSuccess = base.Foreground(o.success).SetString(ToolSuccess)
 	s.Tool.IconError = base.Foreground(o.error).SetString(ToolError)
-	s.Tool.IconCancelled = muted.SetString(ToolPending)
+	s.Tool.IconCanceled = muted.SetString(ToolPending)
 
 	s.Tool.NameNormal = base.Foreground(o.info)
 	s.Tool.NameNested = base.Foreground(o.info)
@@ -640,7 +640,7 @@ func quickStyle(o quickStyleOpts) Styles {
 	s.Tool.ContentLineNumber = base.Foreground(o.fgMoreSubtle).Background(o.bgBase).PaddingRight(1).PaddingLeft(1)
 
 	s.Tool.StateWaiting = base.Foreground(o.fgMostSubtle)
-	s.Tool.StateCancelled = base.Foreground(o.fgMostSubtle)
+	s.Tool.StateCanceled = base.Foreground(o.fgMostSubtle)
 
 	s.Tool.ErrorTag = base.Padding(0, 1).Background(o.destructive).Foreground(o.onPrimary)
 	s.Tool.ErrorMessage = base.Foreground(o.fgSubtle)

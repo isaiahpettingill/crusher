@@ -7,13 +7,15 @@ import (
 	"os"
 	"os/signal"
 
+	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/client"
-	"github.com/charmbracelet/crush/internal/clipboard"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/oauth"
-	"github.com/charmbracelet/crush/internal/oauth/copilot"
-	"github.com/charmbracelet/crush/internal/oauth/hyper"
+	"github.com/charmbracelet/crusher/internal/client"
+	"github.com/charmbracelet/crusher/internal/clipboard"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/oauth"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
+	"github.com/charmbracelet/crusher/internal/oauth/copilot"
+	"github.com/charmbracelet/crusher/internal/oauth/hyper"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
@@ -22,25 +24,31 @@ import (
 var loginCmd = &cobra.Command{
 	Aliases: []string{"auth"},
 	Use:     "login [platform]",
-	Short:   "Login Crush to a platform",
-	Long: `Login Crush to a specified platform.
+	Short:   "Login Crusher to a platform",
+	Long: `Login Crusher to a specified platform.
 The platform should be provided as an argument.
-Available platforms are: hyper, copilot.`,
+Available platforms are: hyper, copilot, codex.`,
 	Example: `
 # Authenticate with Charm Hyper
-crush login
+crusher login
 
 # Authenticate with GitHub Copilot
-crush login copilot
+crusher login copilot
+
+# Authenticate with ChatGPT Codex
+crusher login codex
 
 # Force re-authentication even if already logged in
-crush login -f copilot
+crusher login -f copilot
   `,
 	ValidArgs: []cobra.Completion{
 		"hyper",
 		"copilot",
 		"github",
 		"github-copilot",
+		"codex",
+		"chatgpt",
+		"openai-codex",
 	},
 	Args: cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -66,6 +74,8 @@ crush login -f copilot
 			return loginHyper(c, ws.ID, force)
 		case "copilot", "github", "github-copilot":
 			return loginCopilot(c, ws.ID, force)
+		case "codex", "chatgpt", "openai-codex":
+			return loginCodex(c, ws.ID, force)
 		default:
 			return fmt.Errorf("unknown platform: %s", args[0])
 		}
@@ -202,15 +212,56 @@ func loginCopilot(c *client.Client, wsID string, force bool) error {
 		token = t
 	}
 
-	if err := cmp.Or(
-		c.SetConfigField(loginCtx, wsID, config.ScopeGlobal, "providers.copilot.api_key", token.AccessToken),
-		c.SetConfigField(loginCtx, wsID, config.ScopeGlobal, "providers.copilot.oauth", token),
-	); err != nil {
+	if err := c.SetProviderAPIKey(loginCtx, wsID, config.ScopeGlobal, string(catwalk.InferenceProviderCopilot), token); err != nil {
 		return err
 	}
 
 	fmt.Println()
 	fmt.Println("You're now authenticated with GitHub Copilot!")
+	return nil
+}
+
+func loginCodex(c *client.Client, wsID string, force bool) error {
+	loginCtx := getLoginContext()
+
+	if !force {
+		cfg, err := c.GetConfig(loginCtx, wsID)
+		if err == nil && cfg != nil {
+			if pc, ok := cfg.Providers.Get(codex.ProviderID); ok && pc.OAuthToken != nil {
+				fmt.Println("You are already logged in to Codex.")
+				fmt.Println("Use --force to re-authenticate.")
+				return nil
+			}
+		}
+	}
+
+	fmt.Println("Requesting device code from OpenAI...")
+	dc, err := codex.RequestDeviceCode(loginCtx)
+	if err != nil {
+		return err
+	}
+
+	clipboard.WriteText(dc.UserCode)
+	fmt.Println()
+	fmt.Println("Open this URL and enter the code to authenticate with ChatGPT Codex:")
+	fmt.Println()
+	fmt.Println(lipgloss.NewStyle().Hyperlink(codex.DeviceURL, "id=codex").Render(codex.DeviceURL))
+	fmt.Println()
+	fmt.Println("Code:", lipgloss.NewStyle().Bold(true).Render(dc.UserCode))
+	fmt.Println()
+	fmt.Println("Waiting for authorization...")
+
+	token, err := codex.PollForToken(loginCtx, dc)
+	if err != nil {
+		return err
+	}
+
+	if err := c.SetProviderAPIKey(loginCtx, wsID, config.ScopeGlobal, codex.ProviderID, token); err != nil {
+		return err
+	}
+
+	fmt.Println()
+	fmt.Println("You're now authenticated with Codex!")
 	return nil
 }
 

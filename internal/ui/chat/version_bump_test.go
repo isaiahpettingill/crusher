@@ -4,12 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/ui/anim"
-	"github.com/charmbracelet/crush/internal/ui/attachments"
-	"github.com/charmbracelet/crush/internal/ui/list"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/ui/anim"
+	"github.com/charmbracelet/crusher/internal/ui/attachments"
+	"github.com/charmbracelet/crusher/internal/ui/list"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 
@@ -545,7 +545,7 @@ func TestAgenticFetchToolMessageItem_AnimateBumpsVersion(t *testing.T) {
 // TestBaseToolMessageItem_FinishedTransition covers §4.5.1 for
 // tools: a still-running tool reports Finished() == false; once the
 // tool call is marked finished and a result lands, Finished()
-// returns true. Cancelled tools also become Finished.
+// returns true. Canceled tools also become Finished.
 func TestBaseToolMessageItem_FinishedTransition(t *testing.T) {
 	t.Parallel()
 

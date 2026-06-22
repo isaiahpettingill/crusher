@@ -18,24 +18,25 @@ import (
 
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/agent/prompt"
-	"github.com/charmbracelet/crush/internal/agent/tools"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/discover"
-	"github.com/charmbracelet/crush/internal/event"
-	"github.com/charmbracelet/crush/internal/filetracker"
-	"github.com/charmbracelet/crush/internal/history"
-	"github.com/charmbracelet/crush/internal/hooks"
-	"github.com/charmbracelet/crush/internal/log"
-	"github.com/charmbracelet/crush/internal/lsp"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/oauth/copilot"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/agent/prompt"
+	"github.com/charmbracelet/crusher/internal/agent/tools"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/discover"
+	"github.com/charmbracelet/crusher/internal/event"
+	"github.com/charmbracelet/crusher/internal/filetracker"
+	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/charmbracelet/crusher/internal/hooks"
+	"github.com/charmbracelet/crusher/internal/log"
+	"github.com/charmbracelet/crusher/internal/lsp"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
+	"github.com/charmbracelet/crusher/internal/oauth/copilot"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/skills"
 	"golang.org/x/sync/errgroup"
 
 	"charm.land/fantasy/providers/anthropic"
@@ -246,7 +247,7 @@ func (c *coordinator) run(ctx context.Context, accept *AcceptedRun, sessionID st
 	// Coalesce per-attempt RunComplete payloads so only the final
 	// outcome reaches subscribers. Without this, the first attempt's
 	// failed RunComplete (unauthorized) would race ahead of the
-	// retry's success, and `crush run` would exit on the stale error
+	// retry's success, and `crusher run` would exit on the stale error
 	// before ever seeing the retry result. Each attempt's
 	// SessionAgentCall.OnComplete hook overwrites latest; we publish
 	// exactly once after retries resolve, via PublishMustDeliver, so
@@ -392,28 +393,13 @@ func getProviderOptions(model Model, providerCfg config.ProviderConfig) fantasy.
 			extraBody    = make(map[string]any)
 		)
 
-		switch providerCfg.ID {
-		case string(catwalk.InferenceProviderAlibabaSingapore):
-			switch {
-			case !hasEffort && shouldSetEffort:
-				extraBody["reasoning_effort"] = model.ModelCfg.ReasoningEffort
-			case !hasThink && model.CatwalkCfg.CanReason:
-				if model.ModelCfg.Think {
-					extraBody["thinking"] = map[string]any{"type": "enabled"}
-				} else {
-					extraBody["thinking"] = map[string]any{"type": "disabled"}
-				}
-			}
-			mergedOptions["extra_body"] = extraBody
-
-		default:
-			switch {
-			case !hasEffort && shouldSetEffort:
-				mergedOptions["effort"] = model.ModelCfg.ReasoningEffort
-			case !hasThink && model.ModelCfg.Think:
-				mergedOptions["thinking"] = map[string]any{"budget_tokens": 2000}
-			}
+		switch {
+		case !hasEffort && shouldSetEffort:
+			mergedOptions["effort"] = model.ModelCfg.ReasoningEffort
+		case !hasThink && model.ModelCfg.Think:
+			mergedOptions["thinking"] = map[string]any{"budget_tokens": 2000}
 		}
+		_ = extraBody
 
 		parsed, err := anthropic.ParseOptions(mergedOptions)
 		if err == nil {
@@ -491,16 +477,6 @@ func getProviderOptions(model Model, providerCfg config.ProviderConfig) fantasy.
 					extraBody["reasoning"] = map[string]string{"effort": "none"}
 				}
 			}
-		case string(catwalk.InferenceProviderZAI), string(catwalk.InferenceProviderDeepSeek):
-			if model.ModelCfg.Think || model.ModelCfg.ReasoningEffort != "" {
-				extraBody["thinking"] = map[string]any{
-					"type": "enabled",
-				}
-			} else {
-				extraBody["thinking"] = map[string]any{
-					"type": "disabled",
-				}
-			}
 		case string(catwalk.InferenceProviderFireworks):
 			// NOTE: Fireworks break if we set both `reasoning_effort` and `thinking`.
 			if model.ModelCfg.ReasoningEffort == "" {
@@ -509,10 +485,6 @@ func getProviderOptions(model Model, providerCfg config.ProviderConfig) fantasy.
 				} else {
 					extraBody["thinking"] = map[string]any{"type": "disabled"}
 				}
-			}
-		case string(catwalk.InferenceProviderAlibabaSingapore):
-			if model.CatwalkCfg.CanReason {
-				extraBody["enable_thinking"] = model.ModelCfg.Think
 			}
 		}
 
@@ -615,7 +587,7 @@ func (c *coordinator) buildTools(ctx context.Context, agent config.Agent, isSubA
 		}
 	}
 
-	logFile := filepath.Join(c.cfg.Config().Options.DataDirectory, "logs", "crush.log")
+	logFile := filepath.Join(c.cfg.Config().Options.DataDirectory, "logs", "crusher.log")
 
 	// Build hook runner if PreToolUse hooks are configured.
 	var hookRunner *hooks.Runner
@@ -626,8 +598,8 @@ func (c *coordinator) buildTools(ctx context.Context, agent config.Agent, isSubA
 	allTools = append(
 		allTools,
 		tools.NewBashTool(c.permissions, c.cfg.WorkingDir(), c.cfg.Config().Options.Attribution, modelID),
-		tools.NewCrushInfoTool(c.cfg, c.lspManager, c.allSkills, c.activeSkills, c.skillTracker),
-		tools.NewCrushLogsTool(logFile),
+		tools.NewCrusherInfoTool(c.cfg, c.lspManager, c.allSkills, c.activeSkills, c.skillTracker),
+		tools.NewCrusherLogsTool(logFile),
 		tools.NewJobOutputTool(),
 		tools.NewJobKillTool(),
 		tools.NewDownloadTool(c.permissions, c.cfg.WorkingDir(), nil),
@@ -873,6 +845,9 @@ func (c *coordinator) buildOpenaiCompatProvider(baseURL, apiKey string, headers 
 	// Set HTTP client based on provider and debug mode.
 	var httpClient *http.Client
 	switch providerID {
+	case codex.ProviderID:
+		opts = append(opts, openaicompat.WithUseResponsesAPI())
+		httpClient = codex.NewClient(nil, c.cfg.Config().Options.Debug)
 	case string(catwalk.InferenceProviderCopilot):
 		opts = append(
 			opts,
@@ -1041,7 +1016,7 @@ func (c *coordinator) buildProvider(providerCfg config.ProviderConfig, model con
 		switch providerCfg.ID {
 		case hyper.Name:
 			baseURL = hyper.BaseURL() + "/v1"
-			headers["x-crush-id"] = event.GetID()
+			headers["x-crusher-id"] = event.GetID()
 		case string(catwalk.InferenceProviderZAI):
 			if providerCfg.ExtraBody == nil {
 				providerCfg.ExtraBody = map[string]any{}

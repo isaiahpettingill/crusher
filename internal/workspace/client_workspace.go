@@ -10,20 +10,20 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/client"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/history"
-	"github.com/charmbracelet/crush/internal/log"
-	"github.com/charmbracelet/crush/internal/lsp"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/oauth"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/proto"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/skills"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/client"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/charmbracelet/crusher/internal/log"
+	"github.com/charmbracelet/crusher/internal/lsp"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/oauth"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/skills"
 	"github.com/charmbracelet/x/powernap/pkg/lsp/protocol"
 )
 
@@ -736,7 +736,7 @@ func (w *ClientWorkspace) translateEvent(ev any) tea.Msg {
 				MessageID: e.Payload.MessageID,
 				Text:      e.Payload.Text,
 				Error:     e.Payload.Error,
-				Cancelled: e.Payload.Cancelled,
+				Canceled:  e.Payload.Canceled,
 			},
 		}
 	case pubsub.Event[proto.SkillsEvent]:

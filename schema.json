@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/charmbracelet/crush/internal/config/config",
+  "$id": "https://github.com/charmbracelet/crusher/internal/config/config",
   "$ref": "#/$defs/Config",
   "$defs": {
     "Attribution": {
@@ -22,7 +22,7 @@
         },
         "generated_with": {
           "type": "boolean",
-          "description": "Add Generated with Crush line to commit messages and issues and PRs",
+          "description": "Add Generated with Crusher line to commit messages and issues and PRs",
           "default": true
         }
       },
@@ -399,7 +399,7 @@
             "type": "string",
             "examples": [
               ".cursorrules",
-              "CRUSH.md"
+              "CRUSHER.md"
             ]
           },
           "type": "array",
@@ -412,7 +412,7 @@
           "type": "array",
           "description": "Paths to files containing global context information for the AI",
           "default": [
-            "~/.config/crush/CRUSH.md",
+            "~/.config/crusher/CRUSHER.md",
             "~/.config/AGENTS.md"
           ]
         },
@@ -420,7 +420,7 @@
           "items": {
             "type": "string",
             "examples": [
-              "~/.config/crush/skills",
+              "~/.config/crusher/skills",
               "./skills"
             ]
           },
@@ -449,9 +449,9 @@
         "data_directory": {
           "type": "string",
           "description": "Directory for storing application data. Relative paths are resolved against the working directory; absolute paths are used as-is.",
-          "default": ".crush",
+          "default": ".crusher",
           "examples": [
-            ".crush"
+            ".crusher"
           ]
         },
         "disabled_tools": {
@@ -490,7 +490,7 @@
           "default": "AGENTS.md",
           "examples": [
             "AGENTS.md",
-            "CRUSH.md",
+            "CRUSHER.md",
             "CLAUDE.md",
             "docs/LLMs.md"
           ]
@@ -526,7 +526,7 @@
           "items": {
             "type": "string",
             "examples": [
-              "crush-config"
+              "crusher-config"
             ]
           },
           "type": "array",

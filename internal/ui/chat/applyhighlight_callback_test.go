@@ -3,14 +3,14 @@ package chat
 import (
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/ui/list"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/ui/list"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 
 // renderCountingItem wraps a real chat item and counts Render calls
-// to expose the list-level cache behaviour to tests. The wrapper
+// to expose the list-level cache behavior to tests. The wrapper
 // forwards the list.Item methods exercised by this test — Render,
 // Version, Finished — plus the list.Highlightable surface
 // (SetHighlight / Highlight) used by the callback-driven scenario.
@@ -64,7 +64,7 @@ func (r *renderCountingItem) Highlight() (int, int, int, int) {
 // driving BeginSelectionDrag directly, the test registers a render
 // callback that mutates the chat items' highlight ranges (just like
 // Chat.applyHighlightRange does in production) and verifies the
-// resulting cache behaviour:
+// resulting cache behavior:
 //
 //   - Items inside the active range pick up a SetHighlight call,
 //     their version bumps, the F6 cache invalidates, and the list

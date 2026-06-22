@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -202,7 +202,7 @@ func TestRun_NormalCompletionClearsStalePendingCancel(t *testing.T) {
 
 // newCancelTestAgentWithRunComplete builds a DB-backed sessionAgent wired
 // to a RunComplete broker so tests can observe the terminal event a
-// RunID-bearing caller (e.g. `crush run`) blocks on.
+// RunID-bearing caller (e.g. `crusher run`) blocks on.
 func newCancelTestAgentWithRunComplete(t *testing.T) (*sessionAgent, fakeEnv, *pubsub.Broker[notify.RunComplete]) {
 	t.Helper()
 	env := testEnv(t)
@@ -220,7 +220,7 @@ func newCancelTestAgentWithRunComplete(t *testing.T) (*sessionAgent, fakeEnv, *p
 // finding: the cancel-on-entry path returned before the streaming defer
 // that publishes RunComplete was installed. A caller that dispatches a
 // run with a RunID and blocks on RunComplete (ignoring message events,
-// like `crush run`) would hang on an immediately-canceled accepted run.
+// like `crusher run`) would hang on an immediately-canceled accepted run.
 // The cancel-on-entry path must publish a terminal RunComplete carrying
 // the originating RunID.
 func TestRun_CancelOnEntryPublishesRunComplete(t *testing.T) {
@@ -253,8 +253,8 @@ func TestRun_CancelOnEntryPublishesRunComplete(t *testing.T) {
 		assert.Equal(t, "run-cancel-on-entry", got.Payload.RunID,
 			"RunComplete must echo the originating RunID")
 		assert.Equal(t, sess.ID, got.Payload.SessionID)
-		assert.True(t, got.Payload.Cancelled,
-			"cancel-on-entry RunComplete must be marked cancelled")
+		assert.True(t, got.Payload.Canceled,
+			"cancel-on-entry RunComplete must be marked canceled")
 	case <-time.After(2 * time.Second):
 		t.Fatal("cancel-on-entry must publish RunComplete; a RunID caller would hang otherwise")
 	}

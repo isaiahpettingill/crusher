@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/db"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/db"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/google/uuid"
 )
 
@@ -218,7 +218,7 @@ func (s *service) Update(ctx context.Context, msg Message) error {
 	cloned := msg.Clone()
 
 	// Zero or negative debounce: flush every update synchronously. This
-	// preserves the pre-coalescing behaviour for tests and any caller
+	// preserves the pre-coalescing behavior for tests and any caller
 	// that explicitly opted out via [WithDebounce].
 	if s.debounce <= 0 {
 		s.mu.Lock()
@@ -263,7 +263,7 @@ func (s *service) Update(ctx context.Context, msg Message) error {
 	if p.timer == nil && !p.flushing {
 		id := msg.ID
 		p.timer = time.AfterFunc(s.debounce, func() {
-			// Detached from caller ctx so a cancelled stream context
+			// Detached from caller ctx so a canceled stream context
 			// does not strand the buffered write.
 			_ = s.flushOne(context.Background(), id, false)
 		})

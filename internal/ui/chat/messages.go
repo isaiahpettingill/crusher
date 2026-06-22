@@ -9,13 +9,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/ui/anim"
-	"github.com/charmbracelet/crush/internal/ui/attachments"
-	"github.com/charmbracelet/crush/internal/ui/common"
-	"github.com/charmbracelet/crush/internal/ui/list"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/ui/anim"
+	"github.com/charmbracelet/crusher/internal/ui/attachments"
+	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/charmbracelet/crusher/internal/ui/list"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 )
 
 // MessageLeftPaddingTotal is the total width that is taken up by the border +
@@ -416,9 +416,9 @@ func ShouldRenderAssistantMessage(msg *message.Message) bool {
 	content := strings.TrimSpace(msg.Content().Text)
 	thinking := strings.TrimSpace(msg.ReasoningContent().Thinking)
 	isError := msg.FinishReason() == message.FinishReasonError
-	isCancelled := msg.FinishReason() == message.FinishReasonCanceled
+	isCanceled := msg.FinishReason() == message.FinishReasonCanceled
 	hasToolCalls := len(msg.ToolCalls()) > 0
-	return !hasToolCalls || content != "" || thinking != "" || msg.IsThinking() || isError || isCancelled
+	return !hasToolCalls || content != "" || thinking != "" || msg.IsThinking() || isError || isCanceled
 }
 
 // BuildToolResultMap creates a map of tool call IDs to their results from a list of messages.

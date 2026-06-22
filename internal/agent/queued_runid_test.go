@@ -9,9 +9,9 @@ import (
 
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,7 +73,7 @@ func (m *gatedStreamModel) StreamObject(ctx context.Context, call fantasy.Object
 // end-to-end proof of fix 2: a prompt carrying a RunID that is queued
 // behind a busy session must NOT be silently folded into the active turn.
 // It runs as its own turn via the recursive run path and publishes its
-// own terminal RunComplete, so a `crush run` caller blocking on that
+// own terminal RunComplete, so a `crusher run` caller blocking on that
 // RunID does not hang. The active turn keeps its own RunComplete too.
 func TestRun_QueuedRunIDPromptRunsRecursivelyAndPublishesRunComplete(t *testing.T) {
 	t.Parallel()
@@ -153,13 +153,13 @@ func TestRun_QueuedRunIDPromptRunsRecursivelyAndPublishesRunComplete(t *testing.
 	main, ok := got["run-main"]
 	require.True(t, ok, "the active turn must publish its own RunComplete")
 	require.Empty(t, main.Error)
-	require.False(t, main.Cancelled)
+	require.False(t, main.Canceled)
 
 	follow, ok := got["run-follow"]
 	require.True(t, ok,
 		"the queued RunID prompt must publish its own RunComplete instead of being folded silently")
 	require.Empty(t, follow.Error)
-	require.False(t, follow.Cancelled)
+	require.False(t, follow.Canceled)
 	require.Equal(t, "done", follow.Text, "the queued prompt ran as its own turn")
 
 	// Two distinct assistant turns prove the follow-up was not folded.

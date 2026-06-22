@@ -1,7 +1,7 @@
 // Package lock provides cross-process advisory file locking.
 //
 // File acquires an exclusive lock on the file at path, blocking until
-// the context is cancelled (or its deadline elapses). TryFile does the
+// the context is canceled (or its deadline elapses). TryFile does the
 // same but returns ErrContended immediately if the lock is already
 // held. In both cases the returned release function drops the lock and
 // closes the underlying file descriptor.
@@ -14,7 +14,7 @@
 // create a window where two processes lock different inodes at the
 // same path.
 //
-// This is the canonical file-locking helper for Crush. Callers should
+// This is the canonical file-locking helper for Crusher. Callers should
 // prefer it over rolling their own platform-specific code.
 package lock
 
@@ -30,7 +30,7 @@ import (
 var ErrContended = errors.New("file lock is held by another process")
 
 // File acquires an exclusive advisory lock on the file at path, blocking
-// until the lock is acquired or ctx is cancelled. It returns a release
+// until the lock is acquired or ctx is canceled. It returns a release
 // function that drops the lock and closes the underlying file descriptor.
 //
 // Pass a context with a deadline (e.g. context.WithTimeout) to bound the

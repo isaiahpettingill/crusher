@@ -10,9 +10,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/charmbracelet/crush/internal/config"
-	crushlog "github.com/charmbracelet/crush/internal/log"
-	"github.com/charmbracelet/crush/internal/server"
+	"github.com/charmbracelet/crusher/internal/config"
+	crusherlog "github.com/charmbracelet/crusher/internal/log"
+	"github.com/charmbracelet/crusher/internal/server"
 	"github.com/charmbracelet/x/term"
 	"github.com/spf13/cobra"
 )
@@ -26,7 +26,7 @@ func init() {
 
 var serverCmd = &cobra.Command{
 	Use:   "server",
-	Short: "Start the Crush server",
+	Short: "Start the Crusher server",
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		dataDir, err := cmd.Flags().GetString("data-dir")
 		if err != nil {
@@ -47,17 +47,17 @@ var serverCmd = &cobra.Command{
 			return fmt.Errorf("invalid server host: %v", err)
 		}
 
-		logFile := filepath.Join(config.GlobalCacheDir(), "server-"+safeHostName(hostURL), "crush.log")
+		logFile := filepath.Join(config.GlobalCacheDir(), "server-"+safeHostName(hostURL), "crusher.log")
 
 		if term.IsTerminal(os.Stderr.Fd()) {
-			crushlog.Setup(logFile, debug, os.Stderr)
+			crusherlog.Setup(logFile, debug, os.Stderr)
 		} else {
-			crushlog.Setup(logFile, debug)
+			crusherlog.Setup(logFile, debug)
 		}
 
 		srv := server.NewServer(cfg, hostURL.Scheme, hostURL.Host)
 		srv.SetLogger(slog.Default())
-		slog.Info("Starting Crush server...", "addr", serverHost)
+		slog.Info("Starting Crusher server...", "addr", serverHost)
 
 		errch := make(chan error, 1)
 		sigch := make(chan os.Signal, 1)

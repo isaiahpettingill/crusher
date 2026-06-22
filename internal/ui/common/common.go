@@ -6,11 +6,11 @@ import (
 	"os"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/crush/internal/clipboard"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/ui/styles"
-	"github.com/charmbracelet/crush/internal/ui/util"
-	"github.com/charmbracelet/crush/internal/workspace"
+	"github.com/charmbracelet/crusher/internal/clipboard"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/ui/util"
+	"github.com/charmbracelet/crusher/internal/workspace"
 	uv "github.com/charmbracelet/ultraviolet"
 )
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"charm.land/glamour/v2"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,7 +38,7 @@ func freshRender(t *testing.T, content string, width int) string {
 }
 
 // stripANSI removes all ANSI CSI escape sequences from s so two
-// renders with different colour state can be compared on their
+// renders with different color state can be compared on their
 // visible glyphs alone.
 func stripANSI(s string) string {
 	var b strings.Builder
@@ -662,7 +662,7 @@ func TestStreamingMarkdown_NoSafeBoundaryDoesNotCrash(t *testing.T) {
 // nonBlankLines returns the non-blank visible lines of s with
 // per-line trailing whitespace trimmed. Used to compare two
 // rendered fragments for content equivalence when paragraph-
-// margin behaviour legitimately differs between a single fresh
+// margin behavior legitimately differs between a single fresh
 // render and a streaming split render (per F8 design principle D
 // — visual equivalence is the bar, byte-equivalence is not).
 //

@@ -12,7 +12,7 @@ import (
 
 // TestJQ_CtxCancel verifies that handleJQ polls ctx during iteration and
 // returns ctx.Err() (not an interp.ExitStatus) when the context is
-// cancelled. This is what lets hook timeouts interrupt long-running jq
+// canceled. This is what lets hook timeouts interrupt long-running jq
 // filters rather than waiting for the iterator to terminate naturally.
 func TestJQ_CtxCancel(t *testing.T) {
 	t.Parallel()
@@ -37,7 +37,7 @@ func TestJQ_CtxCancel(t *testing.T) {
 }
 
 // TestJQ_CtxCancel_DuringFilter verifies cancellation mid-stream: ctx is
-// cancelled after jq has started producing output, and the loop must
+// canceled after jq has started producing output, and the loop must
 // observe the cancel on the next iteration rather than running to
 // completion.
 func TestJQ_CtxCancel_DuringFilter(t *testing.T) {
@@ -99,7 +99,7 @@ func (s *slowReader) Read(p []byte) (int, error) {
 // it feeds a large bytes.Reader payload.
 //
 // The reader serves bytes in 512-byte chunks with a 5ms gap between
-// reads. ctx is cancelled after ~50ms, so several chunks have already
+// reads. ctx is canceled after ~50ms, so several chunks have already
 // been read when ctxReader first observes the cancellation. The test
 // asserts that (a) we got a context.Canceled error and (b) the call
 // returned well before the reader would have been fully drained.
@@ -142,7 +142,7 @@ func TestJQ_CtxCancel_MidReadAll(t *testing.T) {
 	if elapsed > time.Second {
 		t.Fatalf("mid-ReadAll cancel took %v; ctxReader is not polling between chunks", elapsed)
 	}
-	// Sanity check: we should have been cancelled mid-stream, not
+	// Sanity check: we should have been canceled mid-stream, not
 	// before any reads happened. If remaining == size, cancel fired so
 	// early nothing was consumed — that's a fast-fail path, not the
 	// mid-read guarantee we want to verify.
@@ -168,7 +168,7 @@ func (r failOnReadReader) Read(p []byte) (int, error) {
 }
 
 // TestJQ_CtxCancel_PreCancel verifies the fast-fail path: a ctx already
-// cancelled before handleJQ is called returns context.Canceled
+// canceled before handleJQ is called returns context.Canceled
 // immediately via the outer-loop guard, never entering io.ReadAll.
 // Complements TestJQ_CtxCancel_MidReadAll.
 //

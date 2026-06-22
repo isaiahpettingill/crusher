@@ -18,28 +18,28 @@ import (
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/fantasy"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crush/internal/agent"
-	"github.com/charmbracelet/crush/internal/agent/notify"
-	"github.com/charmbracelet/crush/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crush/internal/clipboard"
-	"github.com/charmbracelet/crush/internal/config"
-	"github.com/charmbracelet/crush/internal/db"
-	"github.com/charmbracelet/crush/internal/event"
-	"github.com/charmbracelet/crush/internal/filetracker"
-	"github.com/charmbracelet/crush/internal/format"
-	"github.com/charmbracelet/crush/internal/history"
-	"github.com/charmbracelet/crush/internal/log"
-	"github.com/charmbracelet/crush/internal/lsp"
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/permission"
-	"github.com/charmbracelet/crush/internal/pubsub"
-	"github.com/charmbracelet/crush/internal/session"
-	"github.com/charmbracelet/crush/internal/shell"
-	"github.com/charmbracelet/crush/internal/skills"
-	"github.com/charmbracelet/crush/internal/ui/anim"
-	"github.com/charmbracelet/crush/internal/ui/styles"
-	"github.com/charmbracelet/crush/internal/update"
-	"github.com/charmbracelet/crush/internal/version"
+	"github.com/charmbracelet/crusher/internal/agent"
+	"github.com/charmbracelet/crusher/internal/agent/notify"
+	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
+	"github.com/charmbracelet/crusher/internal/clipboard"
+	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/charmbracelet/crusher/internal/db"
+	"github.com/charmbracelet/crusher/internal/event"
+	"github.com/charmbracelet/crusher/internal/filetracker"
+	"github.com/charmbracelet/crusher/internal/format"
+	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/charmbracelet/crusher/internal/log"
+	"github.com/charmbracelet/crusher/internal/lsp"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/charmbracelet/crusher/internal/shell"
+	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/charmbracelet/crusher/internal/ui/anim"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/update"
+	"github.com/charmbracelet/crusher/internal/version"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/exp/charmtone"
 	"github.com/charmbracelet/x/term"
@@ -79,7 +79,7 @@ type App struct {
 	// runCompletions is the authoritative per-run completion signal,
 	// emitted once per top-level agent turn after all message
 	// updates have been flushed. Bridged into app.events so SSE
-	// subscribers (notably `crush run` in client/server mode) can
+	// subscribers (notably `crusher run` in client/server mode) can
 	// drive their exit on a deterministic, payload-bearing event
 	// instead of guessing from message finish parts.
 	runCompletions *pubsub.Broker[notify.RunComplete]
@@ -360,8 +360,8 @@ func (app *App) RunNonInteractive(ctx context.Context, output io.Writer, prompt,
 		case result := <-done:
 			stopSpinner()
 			if result.err != nil {
-				if errors.Is(result.err, context.Canceled) || errors.Is(result.err, agent.ErrRequestCancelled) {
-					slog.Debug("Non-interactive: agent processing cancelled", "session_id", sess.ID)
+				if errors.Is(result.err, context.Canceled) || errors.Is(result.err, agent.ErrRequestCanceled) {
+					slog.Debug("Non-interactive: agent processing canceled", "session_id", sess.ID)
 					return nil
 				}
 				return fmt.Errorf("agent processing failed: %w", result.err)
@@ -541,7 +541,7 @@ func setupSubscriber[T any](
 				}
 				broker.Publish(pubsub.UpdatedEvent, tea.Msg(event))
 			case <-ctx.Done():
-				slog.Debug("Subscription cancelled", "name", name)
+				slog.Debug("Subscription canceled", "name", name)
 				return
 			}
 		}
@@ -553,7 +553,7 @@ func setupSubscriber[T any](
 // app.events broker using PublishMustDeliver instead of Publish. Use
 // this for terminal events that subscribers cannot tolerate losing —
 // notably RunComplete, which is the authoritative end-of-run signal
-// for `crush run`. A lossy fan-in here can drop the only terminal
+// for `crusher run`. A lossy fan-in here can drop the only terminal
 // event and hang non-interactive clients waiting on it.
 func setupSubscriberMustDeliver[T any](
 	ctx context.Context,
@@ -573,7 +573,7 @@ func setupSubscriberMustDeliver[T any](
 				}
 				broker.PublishMustDeliver(ctx, pubsub.UpdatedEvent, tea.Msg(event))
 			case <-ctx.Done():
-				slog.Debug("Subscription cancelled", "name", name)
+				slog.Debug("Subscription canceled", "name", name)
 				return
 			}
 		}
@@ -616,7 +616,7 @@ func (app *App) Subscribe(program *tea.Program) {
 	app.tuiWG.Add(1)
 	tuiCtx, tuiCancel := context.WithCancel(app.globalCtx)
 	app.cleanupFuncs = append(app.cleanupFuncs, func(context.Context) error {
-		slog.Debug("Cancelling TUI message handler")
+		slog.Debug("Canceling TUI message handler")
 		tuiCancel()
 		app.tuiWG.Wait()
 		return nil

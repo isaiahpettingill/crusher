@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/charmbracelet/crush/internal/message"
-	"github.com/charmbracelet/crush/internal/ui/styles"
+	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 

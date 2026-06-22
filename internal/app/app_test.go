@@ -8,7 +8,7 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/crush/internal/pubsub"
+	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/stretchr/testify/require"
 )
 
@@ -49,7 +49,7 @@ func TestSetupSubscriber_NormalFlow(t *testing.T) {
 }
 
 // TestSetupSubscriber_ContextCancellation verifies the goroutine exits cleanly
-// when the context is cancelled.
+// when the context is canceled.
 func TestSetupSubscriber_ContextCancellation(t *testing.T) {
 	t.Parallel()
 

@@ -17,23 +17,23 @@ import (
 	"charm.land/fantasy"
 )
 
-const CrushLogsToolName = "crush_logs"
+const CrusherLogsToolName = "crusher_logs"
 
-//go:embed crush_logs.md.tpl
-var crushLogsDescriptionTmpl []byte
+//go:embed crusher_logs.md.tpl
+var crusherLogsDescriptionTmpl []byte
 
-var crushLogsDescriptionTpl = template.Must(
-	template.New("crushLogsDescription").
-		Parse(string(crushLogsDescriptionTmpl)),
+var crusherLogsDescriptionTpl = template.Must(
+	template.New("crusherLogsDescription").
+		Parse(string(crusherLogsDescriptionTmpl)),
 )
 
-type crushLogsDescriptionData struct {
+type crusherLogsDescriptionData struct {
 	DefaultLines int
 	MaxLines     int
 }
 
-func crushLogsDescription() string {
-	return renderTemplate(crushLogsDescriptionTpl, crushLogsDescriptionData{
+func crusherLogsDescription() string {
+	return renderTemplate(crusherLogsDescriptionTpl, crusherLogsDescriptionData{
 		DefaultLines: defaultLogLines,
 		MaxLines:     maxLogLines,
 	})
@@ -69,23 +69,23 @@ var sensitiveKeys = []string{
 	"credential",
 }
 
-type CrushLogsParams struct {
+type CrusherLogsParams struct {
 	Lines int `json:"lines,omitempty" description:"Number of recent log entries to return (default 50, max 100)"`
 }
 
-func NewCrushLogsTool(logFile string) fantasy.AgentTool {
+func NewCrusherLogsTool(logFile string) fantasy.AgentTool {
 	return fantasy.NewAgentTool(
-		CrushLogsToolName,
-		crushLogsDescription(),
-		func(ctx context.Context, params CrushLogsParams, call fantasy.ToolCall) (fantasy.ToolResponse, error) {
-			result := runCrushLogs(logFile, params)
+		CrusherLogsToolName,
+		crusherLogsDescription(),
+		func(ctx context.Context, params CrusherLogsParams, call fantasy.ToolCall) (fantasy.ToolResponse, error) {
+			result := runCrusherLogs(logFile, params)
 			return fantasy.NewTextResponse(result), nil
 		},
 	)
 }
 
-// runCrushLogs reads and formats the last N log entries from the given file.
-func runCrushLogs(logFile string, params CrushLogsParams) string {
+// runCrusherLogs reads and formats the last N log entries from the given file.
+func runCrusherLogs(logFile string, params CrusherLogsParams) string {
 	// Validate and clamp the lines parameter.
 	lines := params.Lines
 	if lines <= 0 {

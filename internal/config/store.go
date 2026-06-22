@@ -12,12 +12,13 @@ import (
 	"time"
 
 	"charm.land/catwalk/pkg/catwalk"
-	hyperp "github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/env"
-	"github.com/charmbracelet/crush/internal/lock"
-	"github.com/charmbracelet/crush/internal/oauth"
-	"github.com/charmbracelet/crush/internal/oauth/copilot"
-	"github.com/charmbracelet/crush/internal/oauth/hyper"
+	hyperp "github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/env"
+	"github.com/charmbracelet/crusher/internal/lock"
+	"github.com/charmbracelet/crusher/internal/oauth"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
+	"github.com/charmbracelet/crusher/internal/oauth/copilot"
+	"github.com/charmbracelet/crusher/internal/oauth/hyper"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
@@ -46,28 +47,28 @@ type RuntimeOverrides struct {
 // pure-data Config, runtime state (working directory, resolver, known
 // providers), and persistence to both global and workspace config files.
 //
-// mu serialises all config file mutations (SetConfigFields,
+// mu serializes all config file mutations (SetConfigFields,
 // RemoveConfigField, RefreshOAuthToken) to prevent both in-process
 // goroutine races and, together with the shared lock.File, cross-process
 // races on the config file.
 //
-// reloadMu serialises ReloadFromDisk calls to prevent concurrent reloads
+// reloadMu serializes ReloadFromDisk calls to prevent concurrent reloads
 // from racing on store fields. autoReload uses TryLock on reloadMu to
 // skip redundant reloads when one is already in progress.
 type ConfigStore struct {
 	config             *Config
 	workingDir         string
 	resolver           VariableResolver
-	globalDataPath     string   // ~/.local/share/crush/crush.json
-	workspacePath      string   // .crush/crush.json
+	globalDataPath     string   // ~/.local/share/crusher/crusher.json
+	workspacePath      string   // .crusher/crusher.json
 	loadedPaths        []string // config files that were successfully loaded
 	knownProviders     []catwalk.Provider
 	overrides          RuntimeOverrides
 	trackedConfigPaths []string                // unique, normalized config file paths
 	snapshots          map[string]fileSnapshot // path -> snapshot at last capture
 
-	mu       sync.Mutex // serialises config file writes
-	reloadMu sync.Mutex // serialises ReloadFromDisk calls
+	mu       sync.Mutex // serializes config file writes
+	reloadMu sync.Mutex // serializes ReloadFromDisk calls
 }
 
 // Config returns the pure-data config struct (read-only after load).
@@ -247,7 +248,7 @@ func (s *ConfigStore) SetConfigFields(scope Scope, kv map[string]any) error {
 
 	// Auto-reload to keep in-memory state fresh after config edits.
 	// We use context.Background() since this is an internal operation that
-	// shouldn't be cancelled by user context.
+	// shouldn't be canceled by user context.
 	if err := s.autoReload(context.Background()); err != nil {
 		// Log warning but don't fail the write - disk is already updated.
 		slog.Warn("Config file updated but failed to reload in-memory state", "error", err)
@@ -334,6 +335,8 @@ func (s *ConfigStore) SetProviderAPIKey(scope Scope, providerID string, apiKey a
 			providerConfig.APIKey = v.AccessToken
 			providerConfig.OAuthToken = v
 			switch providerID {
+			case codex.ProviderID:
+				providerConfig.SetupCodex()
 			case string(catwalk.InferenceProviderCopilot):
 				providerConfig.SetupGitHubCopilot()
 			}
@@ -365,6 +368,19 @@ func (s *ConfigStore) SetProviderAPIKey(scope Scope, providerID string, apiKey a
 			ExtraHeaders: make(map[string]string),
 			ExtraParams:  make(map[string]string),
 			Models:       foundProvider.Models,
+		}
+		setKeyOrToken()
+	} else if providerID == codex.ProviderID {
+		providerConfig = ProviderConfig{
+			ID:           codex.ProviderID,
+			Name:         "Codex",
+			BaseURL:      "https://api.openai.com/v1",
+			Type:         catwalk.TypeOpenAICompat,
+			Disable:      false,
+			ExtraHeaders: make(map[string]string),
+			ExtraParams:  make(map[string]string),
+			Models:       codex.Models(),
+			FlatRate:     true,
 		}
 		setKeyOrToken()
 	} else {
@@ -412,6 +428,8 @@ func (s *ConfigStore) RefreshOAuthToken(ctx context.Context, scope Scope, provid
 	var refreshedToken *oauth.Token
 	var refreshErr error
 	switch providerID {
+	case codex.ProviderID:
+		refreshedToken, refreshErr = codex.RefreshToken(ctx, providerConfig.OAuthToken.RefreshToken)
 	case string(catwalk.InferenceProviderCopilot):
 		refreshedToken, refreshErr = copilot.RefreshToken(ctx, providerConfig.OAuthToken.RefreshToken)
 	case hyperp.Name:
@@ -442,6 +460,8 @@ func (s *ConfigStore) RefreshOAuthToken(ctx context.Context, scope Scope, provid
 	providerConfig.APIKey = refreshedToken.AccessToken
 
 	switch providerID {
+	case codex.ProviderID:
+		providerConfig.SetupCodex()
 	case string(catwalk.InferenceProviderCopilot):
 		providerConfig.SetupGitHubCopilot()
 	}
@@ -462,6 +482,9 @@ func (s *ConfigStore) RefreshOAuthToken(ctx context.Context, scope Scope, provid
 func (s *ConfigStore) applyToken(providerConfig ProviderConfig, token *oauth.Token, providerID string) error {
 	providerConfig.OAuthToken = token
 	providerConfig.APIKey = token.AccessToken
+	if providerID == codex.ProviderID {
+		providerConfig.SetupCodex()
+	}
 	if providerID == string(catwalk.InferenceProviderCopilot) {
 		providerConfig.SetupGitHubCopilot()
 	}
@@ -723,7 +746,7 @@ func (s *ConfigStore) captureStalenessSnapshot(paths []string) {
 // ReloadFromDisk re-runs the config load/merge flow and updates the in-memory
 // config atomically. It rebuilds the staleness snapshot after successful reload.
 // On failure, the store state is rolled back to its previous state.
-// Concurrent calls are serialised via reloadMu.
+// Concurrent calls are serialized via reloadMu.
 func (s *ConfigStore) ReloadFromDisk(ctx context.Context) error {
 	if s.workingDir == "" {
 		return fmt.Errorf("cannot reload: working directory not set")

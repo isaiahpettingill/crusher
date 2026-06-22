@@ -9,16 +9,16 @@ import (
 	"charm.land/fantasy"
 	"charm.land/fantasy/providers/anthropic"
 	"charm.land/fantasy/providers/bedrock"
-	"github.com/charmbracelet/crush/internal/config"
+	"github.com/charmbracelet/crusher/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 // mockSessionAgent is a minimal mock for the SessionAgent interface.
 type mockSessionAgent struct {
-	model     Model
-	runFunc   func(ctx context.Context, call SessionAgentCall) (*fantasy.AgentResult, error)
-	cancelled []string
+	model    Model
+	runFunc  func(ctx context.Context, call SessionAgentCall) (*fantasy.AgentResult, error)
+	canceled []string
 }
 
 func (m *mockSessionAgent) Run(ctx context.Context, call SessionAgentCall) (*fantasy.AgentResult, error) {
@@ -34,7 +34,7 @@ func (m *mockSessionAgent) SetModels(large, small Model)        {}
 func (m *mockSessionAgent) SetTools(tools []fantasy.AgentTool)  {}
 func (m *mockSessionAgent) SetSystemPrompt(systemPrompt string) {}
 func (m *mockSessionAgent) Cancel(sessionID string) {
-	m.cancelled = append(m.cancelled, sessionID)
+	m.canceled = append(m.canceled, sessionID)
 }
 func (m *mockSessionAgent) CancelAll()                                  {}
 func (m *mockSessionAgent) IsSessionBusy(sessionID string) bool         { return false }

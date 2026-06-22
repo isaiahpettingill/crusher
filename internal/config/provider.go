@@ -17,9 +17,9 @@ import (
 
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/catwalk/pkg/embedded"
-	"github.com/charmbracelet/crush/internal/agent/hyper"
-	"github.com/charmbracelet/crush/internal/csync"
-	"github.com/charmbracelet/crush/internal/home"
+	"github.com/charmbracelet/crusher/internal/agent/hyper"
+	"github.com/charmbracelet/crusher/internal/csync"
+	"github.com/charmbracelet/crusher/internal/home"
 	"github.com/charmbracelet/x/etag"
 )
 
@@ -41,8 +41,8 @@ func cachePathFor(name string) string {
 	}
 
 	// return the path to the main data directory
-	// for windows, it should be in `%LOCALAPPDATA%/crush/`
-	// for linux and macOS, it should be in `$HOME/.local/share/crush/`
+	// for windows, it should be in `%LOCALAPPDATA%/crusher/`
+	// for linux and macOS, it should be in `$HOME/.local/share/crusher/`
 	if runtime.GOOS == "windows" {
 		localAppData := os.Getenv("LOCALAPPDATA")
 		if localAppData == "" {
@@ -162,7 +162,7 @@ func Providers(cfg *Config) ([]catwalk.Provider, error) {
 			items, err := catwalkSyncer.Get(ctx)
 			if err != nil {
 				catwalkURL := fmt.Sprintf("%s/v2/providers", cmp.Or(os.Getenv("CATWALK_URL"), defaultCatwalkURL))
-				errs = append(errs, fmt.Errorf("Crush was unable to fetch an updated list of providers from %s. Consider setting CRUSH_DISABLE_PROVIDER_AUTO_UPDATE=1 to use the embedded providers bundled at the time of this Crush release. You can also update providers manually. For more info see crush update-providers --help.\n\nCause: %w", catwalkURL, err)) //nolint:staticcheck
+				errs = append(errs, fmt.Errorf("Crusher was unable to fetch an updated list of providers from %s. Consider setting CRUSHER_DISABLE_PROVIDER_AUTO_UPDATE=1 to use the embedded providers bundled at the time of this Crusher release. You can also update providers manually. For more info see crusher update-providers --help.\n\nCause: %w", catwalkURL, err)) //nolint:staticcheck
 				return
 			}
 			providers.Append(items...)
@@ -177,7 +177,7 @@ func Providers(cfg *Config) ([]catwalk.Provider, error) {
 
 			item, err := hyperSyncer.Get(ctx)
 			if err != nil {
-				errs = append(errs, fmt.Errorf("Crush was unable to fetch updated information from Hyper: %w", err)) //nolint:staticcheck
+				errs = append(errs, fmt.Errorf("Crusher was unable to fetch updated information from Hyper: %w", err)) //nolint:staticcheck
 				return
 			}
 			hyperProvider = item
@@ -186,14 +186,72 @@ func Providers(cfg *Config) ([]catwalk.Provider, error) {
 
 		wg.Wait()
 
-		if hyperFound {
-			providerList = append([]catwalk.Provider{hyperProvider}, slices.Collect(providers.Seq())...)
-		} else {
-			providerList = slices.Collect(providers.Seq())
+		providerList = filterSupportedDefaultProviders(slices.Collect(providers.Seq()))
+		if hyperFound && isSupportedDefaultProvider(hyperProvider) {
+			providerList = append([]catwalk.Provider{hyperProvider}, providerList...)
 		}
 		providerErr = errors.Join(errs...)
 	})
 	return providerList, providerErr
+}
+
+func filterSupportedDefaultProviders(providers []catwalk.Provider) []catwalk.Provider {
+	filtered := make([]catwalk.Provider, 0, len(providers))
+	for _, provider := range providers {
+		provider.Models = filterSupportedModels(provider.Models)
+		if isSupportedDefaultProvider(provider) && len(provider.Models) > 0 {
+			filtered = append(filtered, provider)
+		}
+	}
+	return filtered
+}
+
+func isSupportedDefaultProvider(provider catwalk.Provider) bool {
+	switch strings.ToLower(string(provider.ID)) {
+	case "alibaba", "alibaba-singapore", "zai", "z-ai", "zhipu", "deepseek", "minimax", "minimax-china", "moonshot", "baidu", "qwen", "dashscope", "volcengine", "bytedance", "siliconflow", "yandex", "gigachat":
+		return false
+	default:
+		return true
+	}
+}
+
+func filterSupportedModels(models []catwalk.Model) []catwalk.Model {
+	filtered := make([]catwalk.Model, 0, len(models))
+	for _, model := range models {
+		if isSupportedModel(model) {
+			filtered = append(filtered, model)
+		}
+	}
+	return filtered
+}
+
+func isSupportedModel(model catwalk.Model) bool {
+	value := strings.ToLower(model.ID + " " + model.Name)
+	blocked := []string{
+		"alibaba",
+		"baichuan",
+		"baidu",
+		"bytedance",
+		"dashscope",
+		"deepseek",
+		"glm",
+		"kimi",
+		"minimax",
+		"moonshot",
+		"qwen",
+		"siliconflow",
+		"volcengine",
+		"yandex",
+		"z-ai",
+		"zai/",
+		"zhipu",
+	}
+	for _, item := range blocked {
+		if strings.Contains(value, item) {
+			return false
+		}
+	}
+	return true
 }
 
 type cache[T any] struct {

@@ -24,6 +24,11 @@ type Enricher interface {
 // load.go or any existing enricher.
 var enrichers = map[string]Enricher{}
 
+func init() {
+	RegisterEnricher("llama.cpp", noopEnricher{})
+	RegisterEnricher("llamacpp", noopEnricher{})
+}
+
 // RegisterEnricher registers an Enricher for the given provider type.
 // Called from init() in each enricher implementation file.
 func RegisterEnricher(providerType string, e Enricher) {
@@ -46,7 +51,7 @@ func IsKnownCustomProvider(providerType string) bool {
 
 // RegisteredProviderTypes returns the provider type strings that have a
 // registered enricher, sorted for stable output. These are the custom,
-// locally-discovered providers (e.g. ollama, omlx) that Crush accepts as
+// locally-discovered providers (e.g. ollama, omlx) that Crusher accepts as
 // a `type` value even though they are not catwalk provider types. The
 // schema generator uses this so the published enum stays in sync with the
 // registry instead of drifting from a hand-maintained list.
@@ -57,4 +62,10 @@ func RegisteredProviderTypes() []string {
 	}
 	sort.Strings(types)
 	return types
+}
+
+type noopEnricher struct{}
+
+func (noopEnricher) EnrichModels(ctx context.Context, cfg Config, resolver Resolver, models []catwalk.Model) ([]catwalk.Model, error) {
+	return models, nil
 }
