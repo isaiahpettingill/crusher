@@ -46,7 +46,7 @@ func newHeader(com *common.Common) *header {
 func (h *header) refresh() {
 	t := h.com.Styles
 	isHyper := h.com.IsHyper()
-	charm := "Charm™"
+	charm := "Chuck Norris Crusher"
 	if !isHyper {
 		charm = " " + charm
 	}

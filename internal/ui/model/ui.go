@@ -41,6 +41,7 @@ import (
 	"github.com/charmbracelet/crusher/internal/history"
 	"github.com/charmbracelet/crusher/internal/home"
 	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
 	"github.com/charmbracelet/crusher/internal/permission"
 	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/charmbracelet/crusher/internal/session"
@@ -977,6 +978,15 @@ func (m *UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.textarea.MoveToEnd()
 		m.syncBangModeFromTextarea()
 		cmds = append(cmds, m.updateTextareaWithPrevHeight(msg, prevHeight))
+	case flameTickMsg:
+		if m.flame.active {
+			m.flame.frame++
+			if m.flame.frame >= flameFrames {
+				m.flame.active = false
+			} else {
+				cmds = append(cmds, flameTick())
+			}
+		}
 	case shellStreamMsg:
 		if item := m.chat.MessageItem(msg.PendingID); item != nil {
 			if shellItem, ok := item.(*chat.ShellItem); ok {
@@ -1906,6 +1916,8 @@ func (m *UI) openAuthenticationDialog(provider catwalk.Provider, model config.Se
 	)
 
 	switch provider.ID {
+	case catwalk.InferenceProvider(codex.ProviderID):
+		dlg, cmd = dialog.NewOAuthCodex(m.com, isOnboarding, provider, model, modelType)
 	case "hyper":
 		dlg, cmd = dialog.NewOAuthHyper(m.com, isOnboarding, provider, model, modelType)
 	case catwalk.InferenceProviderCopilot:
@@ -2465,6 +2477,9 @@ func (m *UI) Draw(scr uv.Screen, area uv.Rectangle) *tea.Cursor {
 	// accordingly.
 	if m.dialog.HasDialogs() {
 		return m.dialog.Draw(scr, scr.Bounds())
+	}
+	if m.flame.active {
+		m.drawFlameOverlay(scr, scr.Bounds())
 	}
 
 	switch m.focus {
@@ -3368,9 +3383,10 @@ func (m *UI) renderEditorView(width int) string {
 	if len(m.attachments.List()) > 0 {
 		attachmentsView = m.attachments.Render(width)
 	}
+	textareaView := lipgloss.NewStyle().Width(width).Render(m.textarea.View())
 	return strings.Join([]string{
 		attachmentsView,
-		m.textarea.View(),
+		textareaView,
 		"", // margin at bottom of editor
 	}, "\n")
 }
@@ -3910,26 +3926,64 @@ func flameTick() tea.Cmd {
 
 func playHawkSound() tea.Cmd {
 	return func() tea.Msg {
-		cwd, err := os.Getwd()
-		if err != nil {
-			return nil
-		}
-		path := filepath.Join(cwd, "hawk.mp3")
+		path := filepath.Join(mustGetwd(), "hawk.mp3")
 		if _, err := os.Stat(path); err != nil {
 			return nil
 		}
-		var cmd *exec.Cmd
-		switch runtime.GOOS {
-		case "windows":
-			cmd = exec.Command("cmd", "/c", "start", "", path)
-		case "darwin":
-			cmd = exec.Command("open", path)
-		default:
-			cmd = exec.Command("xdg-open", path)
+		if cmd := headlessAudioCommand(path); cmd != nil {
+			_ = cmd.Start()
+			return nil
 		}
-		_ = cmd.Start()
+		fmt.Print("\a")
 		return nil
 	}
+}
+
+const flameFrames = 28
+
+func mustGetwd() string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "."
+	}
+	return cwd
+}
+
+func headlessAudioCommand(path string) *exec.Cmd {
+	for _, candidate := range []struct {
+		name string
+		args []string
+	}{
+		{"ffplay", []string{"-nodisp", "-autoexit", "-loglevel", "quiet", path}},
+		{"mpv", []string{"--no-video", "--really-quiet", path}},
+		{"mpg123", []string{"-q", path}},
+		{"mpg321", []string{"-q", path}},
+		{"afplay", []string{path}},
+	} {
+		if _, err := exec.LookPath(candidate.name); err == nil {
+			return exec.Command(candidate.name, candidate.args...)
+		}
+	}
+	if runtime.GOOS == "windows" {
+		return windowsMediaPlayerCommand(path)
+	}
+	return nil
+}
+
+func windowsMediaPlayerCommand(path string) *exec.Cmd {
+	name, err := exec.LookPath("powershell")
+	if err != nil {
+		name, err = exec.LookPath("pwsh")
+		if err != nil {
+			return nil
+		}
+	}
+	quotedPath, err := filepath.Abs(path)
+	if err != nil {
+		quotedPath = path
+	}
+	script := fmt.Sprintf(`Add-Type -AssemblyName PresentationCore; $p = New-Object System.Windows.Media.MediaPlayer; $p.Open([Uri]%q); $p.Play(); Start-Sleep -Seconds 4`, quotedPath)
+	return exec.Command(name, "-NoProfile", "-WindowStyle", "Hidden", "-Command", script)
 }
 
 func (m *UI) drawFlameOverlay(scr uv.Screen, area uv.Rectangle) {

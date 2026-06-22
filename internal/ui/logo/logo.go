@@ -23,7 +23,7 @@ type Opts struct {
 	FieldColor   color.Color // diagonal lines
 	TitleColorA  color.Color // left gradient ramp point
 	TitleColorB  color.Color // right gradient ramp point
-	CharmColor   color.Color // Charm™ text color
+	CharmColor   color.Color // Brand text color.
 	VersionColor color.Color // version text color
 	Width        int         // width of the rendered logo, used for truncation
 	Hyper        bool        // whether it is Crusher or Hypercrusher
@@ -40,7 +40,7 @@ type Opts struct {
 // The compact argument determines whether it renders compact for the sidebar
 // or wider for the main pane.
 func Render(base lipgloss.Style, version string, compact bool, o Opts) string {
-	charm := "Charm™"
+	charm := "Chuck Norris Crusher"
 	if !o.Hyper {
 		charm = " " + charm
 	}
@@ -91,7 +91,7 @@ func Render(base lipgloss.Style, version string, compact bool, o Opts) string {
 	}
 	crusher = b.String()
 
-	// Charm and version.
+	// Brand and version.
 	metaRowGap := 1
 	maxVersionWidth := crusherWidth - lipgloss.Width(charm) - metaRowGap
 	version = ansi.Truncate(version, maxVersionWidth, "…") // truncate version if too long.
@@ -153,7 +153,7 @@ func SmallRender(t *styles.Styles, width int, o Opts) string {
 	if o.Hyper {
 		name = "HYPERCRUSHER"
 	}
-	charm := "Charm™"
+	charm := "Chuck Norris Crusher"
 	if !o.Hyper {
 		charm = " " + charm
 	}

@@ -20,6 +20,7 @@ import (
 	"github.com/charmbracelet/crusher/internal/agent/hyper"
 	"github.com/charmbracelet/crusher/internal/csync"
 	"github.com/charmbracelet/crusher/internal/home"
+	"github.com/charmbracelet/crusher/internal/oauth/codex"
 	"github.com/charmbracelet/x/etag"
 )
 
@@ -190,9 +191,19 @@ func Providers(cfg *Config) ([]catwalk.Provider, error) {
 		if hyperFound && isSupportedDefaultProvider(hyperProvider) {
 			providerList = append([]catwalk.Provider{hyperProvider}, providerList...)
 		}
+		providerList = append([]catwalk.Provider{codexProvider()}, providerList...)
 		providerErr = errors.Join(errs...)
 	})
 	return providerList, providerErr
+}
+
+func codexProvider() catwalk.Provider {
+	return catwalk.Provider{
+		ID:     catwalk.InferenceProvider(codex.ProviderID),
+		Name:   "OpenAI Subscription",
+		Type:   catwalk.TypeOpenAICompat,
+		Models: codex.Models(),
+	}
 }
 
 func filterSupportedDefaultProviders(providers []catwalk.Provider) []catwalk.Provider {

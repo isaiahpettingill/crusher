@@ -62,7 +62,7 @@ func (mt ModelType) Placeholder() string {
 }
 
 const (
-	onboardingModelInputPlaceholder = "Find your fave"
+	onboardingModelInputPlaceholder = "Select your weapon"
 	largeModelInputPlaceholder      = "Choose a model for large, complex tasks"
 	smallModelInputPlaceholder      = "Choose a model for small, simple tasks"
 )

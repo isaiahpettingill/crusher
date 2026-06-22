@@ -119,24 +119,25 @@ func quickStyle(o quickStyleOpts) Styles {
 		},
 	}
 
+	editorBg := o.bgLeastVisible
 	s.Editor.Textarea = textarea.Styles{
 		Focused: textarea.StyleState{
-			Base:             base,
-			Text:             base,
+			Base:             base.Background(editorBg),
+			Text:             base.Background(editorBg),
 			LineNumber:       base.Foreground(o.fgMostSubtle),
-			CursorLine:       base,
+			CursorLine:       base.Background(editorBg),
 			CursorLineNumber: base.Foreground(o.fgMostSubtle),
-			Placeholder:      base.Foreground(o.fgMostSubtle),
-			Prompt:           base.Foreground(o.accent),
+			Placeholder:      base.Foreground(o.fgMostSubtle).Background(editorBg),
+			Prompt:           base.Foreground(o.accent).Background(editorBg),
 		},
 		Blurred: textarea.StyleState{
-			Base:             base,
-			Text:             base.Foreground(o.fgMoreSubtle),
+			Base:             base.Background(editorBg),
+			Text:             base.Foreground(o.fgMoreSubtle).Background(editorBg),
 			LineNumber:       base.Foreground(o.fgMoreSubtle),
-			CursorLine:       base,
+			CursorLine:       base.Background(editorBg),
 			CursorLineNumber: base.Foreground(o.fgMoreSubtle),
-			Placeholder:      base.Foreground(o.fgMostSubtle),
-			Prompt:           base.Foreground(o.fgMoreSubtle),
+			Placeholder:      base.Foreground(o.fgMostSubtle).Background(editorBg),
+			Prompt:           base.Foreground(o.fgMoreSubtle).Background(editorBg),
 		},
 		Cursor: textarea.CursorStyle{
 			Color: o.secondary,
