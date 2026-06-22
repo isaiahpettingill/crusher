@@ -12,8 +12,8 @@
             "co-authored-by",
             "assisted-by"
           ],
-          "description": "Style of attribution trailer to add to commits",
-          "default": "assisted-by"
+          "description": "Deprecated. Attribution trailers are disabled by default",
+          "default": "none"
         },
         "co_authored_by": {
           "type": "boolean",
@@ -22,8 +22,8 @@
         },
         "generated_with": {
           "type": "boolean",
-          "description": "Add Generated with Crusher line to commit messages and issues and PRs",
-          "default": true
+          "description": "Deprecated. Generated-with lines are no longer added",
+          "default": false
         }
       },
       "additionalProperties": false,
@@ -591,6 +591,8 @@
             "google-vertex",
             "hyper",
             "litellm",
+            "llama.cpp",
+            "llamacpp",
             "lmstudio",
             "ollama",
             "omlx"
@@ -773,6 +775,9 @@
         },
         "expires_at": {
           "type": "integer"
+        },
+        "account_id": {
+          "type": "string"
         }
       },
       "additionalProperties": false,

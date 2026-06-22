@@ -20,7 +20,7 @@ func model(id, name string) catwalk.Model {
 		ContextWindow:          400000,
 		DefaultMaxTokens:       128000,
 		CanReason:              true,
-		ReasoningLevels:        []string{"low", "medium", "high"},
+		ReasoningLevels:        []string{"low", "medium", "high", "xhigh"},
 		DefaultReasoningEffort: "medium",
 	}
 }

@@ -55,6 +55,7 @@ const (
 	largeContextWindowThreshold = 200_000
 	largeContextWindowBuffer    = 20_000
 	smallContextWindowRatio     = 0.2
+	slidingWindowRatio          = 0.75
 )
 
 var userAgent = fmt.Sprintf("Charm-Crusher/%s (https://charm.land/crusher)", version.Version)
@@ -128,6 +129,7 @@ type SessionAgent interface {
 	Run(context.Context, SessionAgentCall) (*fantasy.AgentResult, error)
 	BeginAccepted(sessionID string) *AcceptedRun
 	SetModels(large Model, small Model)
+	SetDisableAutoSummarize(disabled bool)
 	SetTools(tools []fantasy.AgentTool)
 	SetSystemPrompt(systemPrompt string)
 	Cancel(sessionID string)
@@ -159,7 +161,7 @@ type sessionAgent struct {
 	isSubAgent           bool
 	sessions             session.Service
 	messages             message.Service
-	disableAutoSummarize bool
+	disableAutoSummarize *csync.Value[bool]
 	isYolo               bool
 	notify               pubsub.Publisher[notify.Notification]
 	runComplete          pubsub.Publisher[notify.RunComplete]
@@ -231,7 +233,7 @@ func NewSessionAgent(
 		isSubAgent:           opts.IsSubAgent,
 		sessions:             opts.Sessions,
 		messages:             opts.Messages,
-		disableAutoSummarize: opts.DisableAutoSummarize,
+		disableAutoSummarize: csync.NewValue(opts.DisableAutoSummarize),
 		tools:                csync.NewSliceFrom(opts.Tools),
 		isYolo:               opts.IsYolo,
 		notify:               opts.Notify,
@@ -827,6 +829,9 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 			}
 
 			prepared.Messages = a.workaroundProviderMediaLimitations(prepared.Messages, largeModel)
+			if a.disableAutoSummarize.Get() {
+				prepared.Messages = applySlidingContextWindow(prepared.Messages, largeModel)
+			}
 
 			lastSystemRoleInx := 0
 			systemMessageUpdated := false
@@ -1003,7 +1008,7 @@ func (a *sessionAgent) Run(ctx context.Context, call SessionAgentCall) (result *
 				} else {
 					threshold = int64(float64(cw) * smallContextWindowRatio)
 				}
-				if (remaining <= threshold) && !a.disableAutoSummarize {
+				if (remaining <= threshold) && !a.disableAutoSummarize.Get() {
 					shouldSummarize = true
 					return true
 				}
@@ -1452,6 +1457,33 @@ func (a *sessionAgent) createUserMessage(ctx context.Context, call SessionAgentC
 		return message.Message{}, fmt.Errorf("failed to create user message: %w", err)
 	}
 	return msg, nil
+}
+
+func applySlidingContextWindow(messages []fantasy.Message, model Model) []fantasy.Message {
+	contextWindow := model.CatwalkCfg.ContextWindow
+	if contextWindow <= 0 || len(messages) == 0 {
+		return messages
+	}
+
+	budget := int64(float64(contextWindow) * slidingWindowRatio)
+	if budget <= 0 {
+		return messages
+	}
+
+	selected := make([]fantasy.Message, 0, len(messages))
+	var used int64
+	for i := len(messages) - 1; i >= 0; i-- {
+		cost := estimateMessageTokens(messages[i : i+1])
+		if used > 0 && used+cost > budget {
+			break
+		}
+		selected = append(selected, messages[i])
+		used += cost
+	}
+	for i, j := 0, len(selected)-1; i < j; i, j = i+1, j-1 {
+		selected[i], selected[j] = selected[j], selected[i]
+	}
+	return selected
 }
 
 func (a *sessionAgent) preparePrompt(msgs []message.Message, supportsImages bool, attachments ...message.Attachment) ([]fantasy.Message, []fantasy.FilePart) {
@@ -1999,6 +2031,10 @@ func (a *sessionAgent) QueuedPromptsList(sessionID string) []string {
 func (a *sessionAgent) SetModels(large Model, small Model) {
 	a.largeModel.Set(large)
 	a.smallModel.Set(small)
+}
+
+func (a *sessionAgent) SetDisableAutoSummarize(disabled bool) {
+	a.disableAutoSummarize.Set(disabled)
 }
 
 func (a *sessionAgent) SetTools(tools []fantasy.AgentTool) {

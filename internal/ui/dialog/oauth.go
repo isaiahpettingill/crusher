@@ -54,9 +54,10 @@ type OAuth struct {
 	spinner spinner.Model
 	help    help.Model
 	keyMap  struct {
-		Copy   key.Binding
-		Submit key.Binding
-		Close  key.Binding
+		Copy    key.Binding
+		CopyURL key.Binding
+		Submit  key.Binding
+		Close   key.Binding
 	}
 
 	width           int
@@ -104,6 +105,10 @@ func newOAuth(
 		key.WithKeys("c"),
 		key.WithHelp("c", "copy code"),
 	)
+	m.keyMap.CopyURL = key.NewBinding(
+		key.WithKeys("u"),
+		key.WithHelp("u", "copy url"),
+	)
 	m.keyMap.Submit = key.NewBinding(
 		key.WithKeys("enter", "ctrl+y"),
 		key.WithHelp("enter", "copy & open"),
@@ -135,6 +140,10 @@ func (m *OAuth) HandleMsg(msg tea.Msg) Action {
 		switch {
 		case key.Matches(msg, m.keyMap.Copy):
 			cmd := m.copyCode()
+			return ActionCmd{cmd}
+
+		case key.Matches(msg, m.keyMap.CopyURL):
+			cmd := m.copyURL()
 			return ActionCmd{cmd}
 
 		case key.Matches(msg, m.keyMap.Submit):
@@ -272,11 +281,10 @@ func (m *OAuth) innerDialogContent() string {
 				t.Dialog.OAuth.UserCode.Render(m.userCode),
 			)
 
-		link := linkStyle.Hyperlink(m.verificationURL, "id=oauth-verify").Render(m.verificationURL)
+		link := linkStyle.Render(m.verificationURL)
 		url := statusTextStyle.
 			Margin(0, 1).
-			Width(m.width - 2).
-			Render("Browser not opening? Pay a visit to:\n" + link)
+			Render("Browser not opening? Select this URL or press u to copy it:\n" + link)
 
 		waiting := lipgloss.NewStyle().
 			Margin(0, 1).
@@ -337,6 +345,7 @@ func (m *OAuth) ShortHelp() []key.Binding {
 	default:
 		return []key.Binding{
 			m.keyMap.Copy,
+			m.keyMap.CopyURL,
 			m.keyMap.Submit,
 			m.keyMap.Close,
 		}
@@ -348,6 +357,13 @@ func (d *OAuth) copyCode() tea.Cmd {
 		return nil
 	}
 	return common.CopyToClipboard(d.userCode, "Code copied to clipboard")
+}
+
+func (d *OAuth) copyURL() tea.Cmd {
+	if d.State != OAuthStateDisplay {
+		return nil
+	}
+	return common.CopyToClipboard(d.verificationURL, "URL copied to clipboard")
 }
 
 func (d *OAuth) copyCodeAndOpenURL() tea.Cmd {

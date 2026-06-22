@@ -433,14 +433,18 @@ func (c *Commands) defaultCommands() []*CommandItem {
 		NewCommandItem(c.com.Styles, "switch_session", "Sessions", "ctrl+s", ActionOpenDialog{SessionsID}),
 		NewCommandItem(c.com.Styles, "switch_model", "Switch Model", "ctrl+l", ActionOpenDialog{ModelsID}),
 	}
+	cfg := c.com.Config()
 
-	// Only show compact command if there's an active session
 	if c.hasSession {
-		commands = append(commands, NewCommandItem(c.com.Styles, "summarize", "Summarize Session", "", ActionSummarize{SessionID: c.sessionID}))
+		commands = append(commands, NewCommandItem(c.com.Styles, "compact_session", "Compact Session", "", ActionSummarize{SessionID: c.sessionID}))
 	}
+	contextManagementLabel := "Use Compaction Context Management"
+	if cfg != nil && cfg.Options != nil && !cfg.Options.DisableAutoSummarize {
+		contextManagementLabel = "Use Sliding Window Context Management"
+	}
+	commands = append(commands, NewCommandItem(c.com.Styles, "toggle_context_management", contextManagementLabel, "", ActionToggleContextManagement{}))
 
 	// Add reasoning toggle for models that support it
-	cfg := c.com.Config()
 	if agentCfg, ok := cfg.Agents[config.AgentCoder]; ok {
 		providerCfg := cfg.GetProviderForModel(agentCfg.Model)
 		model := cfg.GetModelByType(agentCfg.Model)

@@ -50,15 +50,15 @@ const (
 
 // Default colors for gradient.
 var (
-	defaultGradColorA = color.RGBA{R: 0xff, G: 0, B: 0, A: 0xff}
-	defaultGradColorB = color.RGBA{R: 0, G: 0, B: 0xff, A: 0xff}
-	defaultLabelColor = color.RGBA{R: 0xcc, G: 0xcc, B: 0xcc, A: 0xff}
+	defaultGradColorA     = color.RGBA{R: 0xff, G: 0, B: 0, A: 0xff}
+	defaultGradColorWhite = color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
+	defaultGradColorB     = color.RGBA{R: 0, G: 0, B: 0xff, A: 0xff}
+	defaultLabelColor     = color.RGBA{R: 0xcc, G: 0xcc, B: 0xcc, A: 0xff}
 )
 
-var (
-	availableRunes = []rune("0123456789abcdefABCDEF~!@#$£€%^&*()+=_")
-	ellipsisFrames = []string{".", "..", "...", ""}
-)
+var ellipsisFrames = []string{".", "..", "...", ""}
+
+var patrioticTextStep atomic.Int64
 
 // Internal ID management. Used during animating to ensure that frame messages
 // are received only by spinner components that sent them.
@@ -195,12 +195,11 @@ func New(opts Settings) *Anim {
 
 		// Pre-generate gradient.
 		var ramp []color.Color
-		numFrames := prerenderedFrames
+		numFrames := max(prerenderedFrames, len(foundingDocumentRunes))
 		if opts.CycleColors {
-			ramp = makeGradientRamp(a.width*3, opts.GradColorA, opts.GradColorB, opts.GradColorA, opts.GradColorB)
-			numFrames = a.width * 2
+			ramp = makeGradientRamp(a.width*3, opts.GradColorA, defaultGradColorWhite, opts.GradColorB, opts.GradColorA, defaultGradColorWhite, opts.GradColorB)
 		} else {
-			ramp = makeGradientRamp(a.width, opts.GradColorA, opts.GradColorB)
+			ramp = makeGradientRamp(a.width, opts.GradColorA, defaultGradColorWhite, opts.GradColorB)
 		}
 
 		// Pre-render initial characters.
@@ -209,19 +208,20 @@ func New(opts Settings) *Anim {
 		for i := range a.initialFrames {
 			a.initialFrames[i] = make([]string, a.width+labelGapWidth+a.labelWidth)
 			for j := range a.initialFrames[i] {
-				if j+offset >= len(ramp) {
-					continue // skip if we run out of colors
+				colorIndex := j + offset
+				if opts.CycleColors && len(ramp) > 0 {
+					colorIndex %= len(ramp)
+				} else if colorIndex >= len(ramp) {
+					continue
 				}
 
 				var c color.Color
 				if j <= a.cyclingCharWidth {
-					c = ramp[j+offset]
+					c = ramp[colorIndex]
 				} else {
 					c = opts.LabelColor
 				}
 
-				// Also prerender the initial character with Lip Gloss to avoid
-				// processing in the render loop.
 				a.initialFrames[i][j] = lipgloss.NewStyle().
 					Foreground(c).
 					Render(string(initialChar))
@@ -231,28 +231,22 @@ func New(opts Settings) *Anim {
 			}
 		}
 
-		// Prerender scrambled rune frames for the animation. Seed
-		// the rune picker off the settings hash so cyclingFrames is
-		// a pure function of Settings: two processes with identical
-		// Settings populate the cache with the same glyphs, which
-		// keeps any cross-process golden-file comparison stable.
-		seed := xxh3.HashString(cacheKey)
-		rng := rand.New(rand.NewPCG(seed, ^seed))
 		a.cyclingFrames = make([][]string, numFrames)
 		offset = 0
 		for i := range a.cyclingFrames {
 			a.cyclingFrames[i] = make([]string, a.width)
 			for j := range a.cyclingFrames[i] {
-				if j+offset >= len(ramp) {
-					continue // skip if we run out of colors
+				colorIndex := j + offset
+				if opts.CycleColors && len(ramp) > 0 {
+					colorIndex %= len(ramp)
+				} else if colorIndex >= len(ramp) {
+					continue
 				}
 
-				// Also prerender the color with Lip Gloss here to avoid processing
-				// in the render loop.
-				r := availableRunes[rng.IntN(len(availableRunes))]
+				documentIndex := (i + j) % len(foundingDocumentRunes)
 				a.cyclingFrames[i][j] = lipgloss.NewStyle().
-					Foreground(ramp[j+offset]).
-					Render(string(r))
+					Foreground(ramp[colorIndex]).
+					Render(string(foundingDocumentRunes[documentIndex]))
 			}
 			if opts.CycleColors {
 				offset++
@@ -277,6 +271,10 @@ func New(opts Settings) *Anim {
 			ellipsisFrames: ellipsisSlice,
 		}
 		animCacheMap.Set(cacheKey, cached)
+	}
+
+	if len(a.cyclingFrames) > 0 {
+		a.step.Store(patrioticTextStep.Load() % int64(len(a.cyclingFrames)))
 	}
 
 	// Assign a deterministic birth step to each column for a
@@ -374,7 +372,9 @@ func (a *Anim) Animate(msg StepMsg) tea.Cmd {
 	step := a.step.Add(1)
 	if int(step) >= len(a.cyclingFrames) {
 		a.step.Store(0)
+		step = 0
 	}
+	patrioticTextStep.Store(step)
 
 	frames := a.framesSinceStart.Add(1)
 	if a.initialized.Load() && a.labelWidth > 0 {

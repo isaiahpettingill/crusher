@@ -1085,6 +1085,7 @@ func (c *coordinator) UpdateModels(ctx context.Context) error {
 		return err
 	}
 	c.currentAgent.SetModels(large, small)
+	c.currentAgent.SetDisableAutoSummarize(c.cfg.Config().Options.DisableAutoSummarize)
 
 	agentCfg, ok := c.cfg.Config().Agents[config.AgentCoder]
 	if !ok {

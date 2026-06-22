@@ -98,8 +98,8 @@ func (q *Quit) Draw(scr uv.Screen, area uv.Rectangle) *tea.Cursor {
 	const question = "Are you sure you want to quit?"
 	baseStyle := q.com.Styles.Dialog.Quit.Content
 	buttonOpts := []common.ButtonOpts{
-		{Text: "Yep!", Selected: !q.selectedNo, Padding: 3},
-		{Text: "Nope", Selected: q.selectedNo, Padding: 3},
+		{Text: "Yessir", Selected: !q.selectedNo, Padding: 3},
+		{Text: "Hell no", Selected: q.selectedNo, Padding: 3},
 	}
 	buttons := common.ButtonGroup(q.com.Styles, buttonOpts, " ")
 	content := baseStyle.Render(

@@ -415,10 +415,9 @@ func writeAttribution(b *strings.Builder, cfg *config.ConfigStore) {
 	b.WriteString("[attribution]\n")
 	trailerStyle := c.Options.Attribution.TrailerStyle
 	if trailerStyle == "" {
-		trailerStyle = config.TrailerStyleCoAuthoredBy
+		trailerStyle = config.TrailerStyleNone
 	}
 	fmt.Fprintf(b, "trailer_style = %s\n", trailerStyle)
-	fmt.Fprintf(b, "generated_with = %v\n", c.Options.Attribution.GeneratedWith)
 	b.WriteString("\n")
 }
 

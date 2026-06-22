@@ -303,8 +303,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "202": {
+                        "description": "Accepted"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -314,6 +314,12 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/proto.Error"
                         }
@@ -616,6 +622,71 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}/agent/sessions/{sid}/shell": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "Run shell command",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "sid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Shell command",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ShellCommandRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.ShellCommandResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
                         }
                     },
                     "404": {
@@ -1093,6 +1164,62 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}/current-session": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaces"
+                ],
+                "summary": "Set current session for a client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client ID (UUID)",
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Current session selection",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CurrentSession"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/proto.Error"
                         }
@@ -1825,7 +1952,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_charmbracelet_crusher_internal_proto.Message"
+                                "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_proto.Message"
                             }
                         }
                     },
@@ -1873,7 +2000,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.PermissionGrantResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -2519,7 +2649,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_charmbracelet_crusher_internal_proto.Message"
+                                "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_proto.Message"
                             }
                         }
                     },
@@ -2569,8 +2699,109 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_charmbracelet_crusher_internal_proto.Message"
+                                "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_proto.Message"
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}/skills": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "skills"
+                ],
+                "summary": "List visible skills",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/proto.SkillInfo"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}/skills/read": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "skills"
+                ],
+                "summary": "Read skill content",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Read skill request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ReadSkillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.ReadSkillResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/proto.Error"
                         }
                     },
                     "404": {
@@ -2695,6 +2926,10 @@ const docTemplate = `{
                 },
                 "matcher": {
                     "description": "Regex pattern tested against the tool name. Empty means match all.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Friendly display name shown in the TUI. Falls back to Command when empty.",
                     "type": "string"
                 },
                 "timeout": {
@@ -2836,17 +3071,6 @@ const docTemplate = `{
                 }
             }
         },
-        "config.Scope": {
-            "type": "integer",
-            "enum": [
-                0,
-                1
-            ],
-            "x-enum-varnames": [
-                "ScopeGlobal",
-                "ScopeWorkspace"
-            ]
-        },
         "config.SelectedModel": {
             "type": "object",
             "properties": {
@@ -2966,7 +3190,7 @@ const docTemplate = `{
         "csync.Map-string-config_ProviderConfig": {
             "type": "object"
         },
-        "github_com_charmbracelet_crusher_internal_config.Config": {
+        "github_com_isaiahpettingill_crusher_internal_config.Config": {
             "type": "object",
             "properties": {
                 "$schema": {
@@ -2995,7 +3219,7 @@ const docTemplate = `{
                     }
                 },
                 "options": {
-                    "$ref": "#/definitions/github_com_charmbracelet_crusher_internal_config.Options"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Options"
                 },
                 "permissions": {
                     "$ref": "#/definitions/config.Permissions"
@@ -3023,7 +3247,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_charmbracelet_crusher_internal_config.Options": {
+        "github_com_isaiahpettingill_crusher_internal_config.Options": {
             "type": "object",
             "properties": {
                 "attribution": {
@@ -3075,7 +3299,16 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "global_context_paths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "initialize_as": {
+                    "type": "string"
+                },
+                "notification_style": {
                     "type": "string"
                 },
                 "progress": {
@@ -3092,7 +3325,18 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_charmbracelet_crusher_internal_proto.Message": {
+        "github_com_isaiahpettingill_crusher_internal_config.Scope": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "ScopeGlobal",
+                "ScopeWorkspace"
+            ]
+        },
+        "github_com_isaiahpettingill_crusher_internal_proto.Message": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -3181,6 +3425,9 @@ const docTemplate = `{
                 "prompt": {
                     "type": "string"
                 },
+                "run_id": {
+                    "type": "string"
+                },
                 "session_id": {
                     "type": "string"
                 }
@@ -3189,6 +3436,9 @@ const docTemplate = `{
         "proto.AgentSession": {
             "type": "object",
             "properties": {
+                "attached_clients": {
+                    "type": "integer"
+                },
                 "completion_tokens": {
                     "type": "integer"
                 },
@@ -3218,6 +3468,12 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "todos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.Todo"
+                    }
                 },
                 "updated_at": {
                     "type": "integer"
@@ -3251,7 +3507,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 }
             }
         },
@@ -3265,7 +3521,7 @@ const docTemplate = `{
                     "$ref": "#/definitions/config.SelectedModelType"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 }
             }
         },
@@ -3285,7 +3541,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 }
             }
         },
@@ -3296,7 +3552,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 }
             }
         },
@@ -3307,7 +3563,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 }
             }
         },
@@ -3318,9 +3574,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scope": {
-                    "$ref": "#/definitions/config.Scope"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Scope"
                 },
                 "value": {}
+            }
+        },
+        "proto.CurrentSession": {
+            "type": "object",
+            "properties": {
+                "session_id": {
+                    "type": "string"
+                }
             }
         },
         "proto.Error": {
@@ -3525,6 +3789,14 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.PermissionGrantResponse": {
+            "type": "object",
+            "properties": {
+                "resolved": {
+                    "type": "boolean"
+                }
+            }
+        },
         "proto.PermissionRequest": {
             "type": "object",
             "properties": {
@@ -3576,6 +3848,28 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.ReadSkillRequest": {
+            "type": "object",
+            "properties": {
+                "skill_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ReadSkillResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "result": {
+                    "$ref": "#/definitions/proto.SkillReadResult"
+                }
+            }
+        },
         "proto.ServerControl": {
             "type": "object",
             "properties": {
@@ -3587,6 +3881,9 @@ const docTemplate = `{
         "proto.Session": {
             "type": "object",
             "properties": {
+                "attached_clients": {
+                    "type": "integer"
+                },
                 "completion_tokens": {
                     "type": "integer"
                 },
@@ -3598,6 +3895,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_busy": {
+                    "type": "boolean"
                 },
                 "message_count": {
                     "type": "integer"
@@ -3614,8 +3914,121 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
+                "todos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.Todo"
+                    }
+                },
                 "updated_at": {
                     "type": "integer"
+                }
+            }
+        },
+        "proto.ShellCommandRequest": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "session_id": {
+                    "type": "string"
+                },
+                "term_width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.ShellCommandResponse": {
+            "type": "object",
+            "properties": {
+                "exit_code": {
+                    "type": "integer"
+                },
+                "output": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.SkillDiscoveryState": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "SkillStateNormal",
+                "SkillStateError"
+            ]
+        },
+        "proto.SkillInfo": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "user_invocable": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "proto.SkillReadResult": {
+            "type": "object",
+            "properties": {
+                "builtin": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.SkillState": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "state": {
+                    "$ref": "#/definitions/proto.SkillDiscoveryState"
+                }
+            }
+        },
+        "proto.Todo": {
+            "type": "object",
+            "properties": {
+                "active_form": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },
@@ -3642,8 +4055,11 @@ const docTemplate = `{
         "proto.Workspace": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
                 "config": {
-                    "$ref": "#/definitions/github_com_charmbracelet_crusher_internal_config.Config"
+                    "$ref": "#/definitions/github_com_isaiahpettingill_crusher_internal_config.Config"
                 },
                 "data_dir": {
                     "type": "string"
@@ -3662,6 +4078,13 @@ const docTemplate = `{
                 },
                 "path": {
                     "type": "string"
+                },
+                "skills": {
+                    "description": "Skills carries the snapshot of skill discovery state at workspace\ncreation time. Subsequent updates flow through the SSE event\nstream.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.SkillState"
+                    }
                 },
                 "version": {
                     "type": "string"

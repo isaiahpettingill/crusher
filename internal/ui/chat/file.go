@@ -8,6 +8,7 @@ import (
 	"github.com/isaiahpettingill/crusher/internal/agent/tools"
 	"github.com/isaiahpettingill/crusher/internal/fsext"
 	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/ui/anim"
 	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 )
 
@@ -260,14 +261,13 @@ type MultiEditToolRenderContext struct{}
 
 // RenderTool implements the [ToolRenderer] interface.
 func (m *MultiEditToolRenderContext) RenderTool(sty *styles.Styles, width int, opts *ToolRenderOpts) string {
-	// MultiEdit tool uses full width for diffs.
-	if opts.IsPending() {
-		return pendingTool(sty, "Multi-Edit", opts.Anim, opts.Compact)
-	}
-
 	var params tools.MultiEditParams
 	if err := json.Unmarshal([]byte(opts.ToolCall.Input), &params); err != nil {
 		return toolErrorContent(sty, &message.ToolResult{Content: "Invalid parameters"}, width)
+	}
+
+	if opts.IsPending() {
+		return pendingMultiEditTool(sty, opts, params)
 	}
 
 	file := fsext.PrettyPath(params.FilePath)
@@ -306,6 +306,26 @@ func (m *MultiEditToolRenderContext) RenderTool(sty *styles.Styles, width int, o
 	}
 
 	return joinToolParts(header, diff)
+}
+
+func pendingMultiEditTool(sty *styles.Styles, opts *ToolRenderOpts, params tools.MultiEditParams) string {
+	parts := []string{pendingTool(sty, "Multi-Edit", opts.Anim, opts.Compact)}
+	for i, edit := range params.Edits {
+		label := fmt.Sprintf("Edit %d", i+1)
+		if edit.OldString != "" {
+			label = fmt.Sprintf("Edit %d", i+1)
+		}
+		editAnim := anim.New(anim.Settings{
+			ID:          fmt.Sprintf("%s-edit-%d", opts.ToolCall.ID, i),
+			Size:        8,
+			GradColorA:  sty.WorkingGradFromColor,
+			GradColorB:  sty.WorkingGradToColor,
+			LabelColor:  sty.WorkingLabelColor,
+			CycleColors: true,
+		})
+		parts = append(parts, "  "+pendingTool(sty, label, editAnim, true))
+	}
+	return strings.Join(parts, "\n")
 }
 
 // -----------------------------------------------------------------------------

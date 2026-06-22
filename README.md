@@ -501,31 +501,6 @@ place the file in a specific directory (e.g., `CRUSHER.md` or
 like build commands, code patterns, and conventions it discovered during
 initialization.
 
-### Attribution Settings
-
-By default, Crusher adds attribution information to Git commits and pull requests
-it creates. You can customize this behavior with the `attribution` option:
-
-```json
-{
-  "$schema": "https://charm.land/crusher.json",
-  "options": {
-    "attribution": {
-      "trailer_style": "co-authored-by",
-      "generated_with": true
-    }
-  }
-}
-```
-
-- `trailer_style`: Controls the attribution trailer added to commit messages
-  (default: `assisted-by`)
-  - `assisted-by`: Adds `Assisted-by: Crusher:[ModelID]` as specified in [the convention](https://docs.kernel.org/process/coding-assistants.html#attribution)
-  - `co-authored-by`: Adds `Co-Authored-By: Crusher <crusher@charm.land>`
-  - `none`: No attribution trailer
-- `generated_with`: When true (default), adds `💘 Generated with Crusher` line to
-  commit messages and PR descriptions
-
 ### Custom Providers
 
 Crusher supports custom provider configurations for both OpenAI-compatible and

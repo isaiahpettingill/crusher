@@ -34,6 +34,7 @@ import (
 	"github.com/charmbracelet/ultraviolet/screen"
 	"github.com/charmbracelet/x/editor"
 	xstrings "github.com/charmbracelet/x/exp/strings"
+	"github.com/google/uuid"
 	"github.com/isaiahpettingill/crusher/internal/agent/hyper"
 	"github.com/isaiahpettingill/crusher/internal/agent/notify"
 	agenttools "github.com/isaiahpettingill/crusher/internal/agent/tools"
@@ -1534,6 +1535,27 @@ func (m *UI) handleDialogMsg(msg tea.Msg) tea.Cmd {
 		m.com.Workspace.PermissionSetSkipRequests(yolo)
 		m.setEditorPrompt(yolo)
 		m.dialog.CloseDialog(dialog.CommandsID)
+	case dialog.ActionToggleContextManagement:
+		cmds = append(cmds, func() tea.Msg {
+			cfg := m.com.Config()
+			if cfg == nil || cfg.Options == nil {
+				return util.ReportError(errors.New("configuration not found"))()
+			}
+
+			newValue := !cfg.Options.DisableAutoSummarize
+			if err := m.com.Workspace.SetConfigField(config.ScopeGlobal, "options.disable_auto_summarize", newValue); err != nil {
+				return util.ReportError(err)()
+			}
+			if err := m.com.Workspace.UpdateAgentModel(context.Background()); err != nil {
+				return util.ReportError(err)()
+			}
+			mode := "compaction"
+			if newValue {
+				mode = "sliding window"
+			}
+			return util.NewInfoMsg("Context management set to " + mode)
+		})
+		m.dialog.CloseDialog(dialog.CommandsID)
 	case dialog.ActionSelectNotificationStyle:
 		cfg := m.com.Config()
 		if cfg != nil && cfg.Options != nil {
@@ -2006,7 +2028,11 @@ func (m *UI) handleKeyPressMsg(msg tea.KeyPressMsg) tea.Cmd {
 	}
 
 	if key.Matches(msg, m.keyMap.Quit) && !m.dialog.ContainsDialog(dialog.QuitID) {
-		// Always handle quit keys first
+		if m.chat.Len() > 0 {
+			m.chat.ClearMessages()
+			return tea.Batch(cmds...)
+		}
+
 		if cmd := m.openQuitDialog(); cmd != nil {
 			cmds = append(cmds, cmd)
 		}
@@ -3364,8 +3390,8 @@ var readyPlaceholders = [...]string{
 var workingPlaceholders = [...]string{
 	"Working!",
 	"Working...",
-	"Brrrrr...",
-	"Prrrrrrrr...",
+	"GRRRR...",
+	"I pity the fool!",
 	"Processing...",
 	"Thinking...",
 }
@@ -3605,6 +3631,7 @@ func cancelTimerCmd() tea.Cmd {
 // and starts a timer. The second press (before the timer expires) actually
 // cancels the agent.
 func (m *UI) cancelAgent() tea.Cmd {
+	var cmds []tea.Cmd
 	if !m.hasSession() {
 		return nil
 	}
@@ -3630,10 +3657,28 @@ func (m *UI) cancelAgent() tea.Cmd {
 		return nil
 	}
 
-	// Check if there are queued prompts - if so, clear the queue.
-	if m.com.Workspace.AgentQueuedPrompts(m.session.ID) > 0 {
+	if queued := m.com.Workspace.AgentQueuedPromptsList(m.session.ID); len(queued) > 0 {
 		m.com.Workspace.AgentClearQueue(m.session.ID)
-		return nil
+		for _, prompt := range queued {
+			now := time.Now().Unix()
+			msg := message.Message{
+				ID:        uuid.New().String(),
+				Role:      message.User,
+				SessionID: m.session.ID,
+				Parts: []message.ContentPart{
+					message.TextContent{Text: prompt},
+					message.Finish{Reason: message.FinishReasonEndTurn},
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
+			}
+			if cmd := m.appendSessionMessage(msg); cmd != nil {
+				cmds = append(cmds, cmd)
+			}
+		}
+		m.promptQueue = 0
+		m.updateLayoutAndSize()
+		return tea.Batch(cmds...)
 	}
 
 	// First escape press - set canceling state and start timer.

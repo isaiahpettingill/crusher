@@ -196,11 +196,7 @@ reviewed.
     },
     "auto_lsp": true,
     "debug": false,
-    "debug_lsp": false,
-    "attribution": {
-      "trailer_style": "assisted-by",
-      "generated_with": true
-    }
+    "debug_lsp": false
   }
 }
 ```

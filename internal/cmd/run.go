@@ -37,16 +37,16 @@ var runCmd = &cobra.Command{
 The prompt can be provided as arguments or piped from stdin.`,
 	Example: `
 # Run a simple prompt
-crusher run "Guess my 5 favorite Pokémon"
+crusher run "I pity the fool who ships without tests!"
 
 # Pipe input from stdin
 curl https://charm.land | crusher run "Summarize this website"
 
 # Read from a file
-crusher run "What is this code doing?" <<< prrr.go
+crusher run "What is this code doing?" <<< grrr.go
 
 # Redirect output to a file
-crusher run "Generate a hot README for this project" > MY_HOT_README.md
+crusher run "Generate a tough README for this project" > README_GRRR.md
 
 # Run in quiet mode (hide the spinner)
 crusher run --quiet "Generate a README for this project"

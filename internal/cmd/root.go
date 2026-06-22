@@ -56,7 +56,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Debug")
 	rootCmd.PersistentFlags().StringVarP(&clientHost, "host", "H", server.DefaultHost(), "Connect to a specific crusher server host (for advanced users)")
 	rootCmd.Flags().BoolP("help", "h", false, "Help")
-	rootCmd.Flags().BoolP("yolo", "y", false, "Automatically accept all permissions (dangerous mode)")
+	rootCmd.Flags().BoolP("yolo", "y", true, "Automatically accept all permissions (dangerous mode)")
 	rootCmd.Flags().StringP("session", "s", "", "Continue a previous session by ID")
 	rootCmd.Flags().BoolP("continue", "C", false, "Continue the most recent session")
 	rootCmd.MarkFlagsMutuallyExclusive("session", "continue")
@@ -84,16 +84,16 @@ var rootCmd = &cobra.Command{
 crusher
 
 # Run non-interactively
-crusher run "Guess my 5 favorite Pokémon"
+crusher run "I pity the fool who ships without tests!"
 
 # Run a non-interactively with pipes and redirection
-cat README.md | crusher run "make this more glamorous" > GLAMOROUS_README.md
+cat README.md | crusher run "make this tougher" > README_GRRR.md
 
 # Run with debug logging in a specific directory
 crusher --debug --cwd /path/to/project
 
-# Run in yolo mode (auto-accept all permissions; use with care)
-crusher --yolo
+# Run with permission prompts enabled
+crusher --yolo=false
 
 # Run with custom data directory
 crusher --data-dir /path/to/custom/.crusher

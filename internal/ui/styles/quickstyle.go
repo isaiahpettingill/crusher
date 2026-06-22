@@ -273,40 +273,40 @@ func quickStyle(o quickStyleOpts) Styles {
 					Color: hex(o.fgMostSubtle),
 				},
 				CommentPreproc: ansi.StylePrimitive{
-					Color: hex(charmtone.Bengal),
+					Color: hex(o.warningSubtle),
 				},
 				Keyword: ansi.StylePrimitive{
 					Color: hex(o.info),
 				},
 				KeywordReserved: ansi.StylePrimitive{
-					Color: hex(charmtone.Pony),
+					Color: hex(o.info),
 				},
 				KeywordNamespace: ansi.StylePrimitive{
-					Color: hex(charmtone.Pony),
+					Color: hex(o.infoMoreSubtle),
 				},
 				KeywordType: ansi.StylePrimitive{
-					Color: hex(charmtone.Guppy),
+					Color: hex(o.warningSubtle),
 				},
 				Operator: ansi.StylePrimitive{
-					Color: hex(charmtone.Salmon),
+					Color: hex(o.fgMoreSubtle),
 				},
 				Punctuation: ansi.StylePrimitive{
-					Color: hex(o.warningSubtle),
+					Color: hex(o.fgMostSubtle),
 				},
 				Name: ansi.StylePrimitive{
 					Color: hex(o.fgSubtle),
 				},
 				NameBuiltin: ansi.StylePrimitive{
-					Color: hex(charmtone.Cheeky),
+					Color: hex(o.infoMoreSubtle),
 				},
 				NameTag: ansi.StylePrimitive{
-					Color: hex(charmtone.Mauve),
+					Color: hex(o.info),
 				},
 				NameAttribute: ansi.StylePrimitive{
-					Color: hex(charmtone.Hazy),
+					Color: hex(o.warningSubtle),
 				},
 				NameClass: ansi.StylePrimitive{
-					Color:     hex(charmtone.Salt),
+					Color:     hex(o.fgBase),
 					Underline: new(true),
 					Bold:      new(true),
 				},
@@ -979,7 +979,7 @@ func quickStyle(o quickStyleOpts) Styles {
 	s.Attachments.Image = attachmentIconStyle.SetString(ImageIcon)
 	s.Attachments.Text = attachmentIconStyle.SetString(TextIcon)
 	s.Attachments.Skill = attachmentIconStyle.SetString(SkillIcon)
-	s.Attachments.Normal = base.Padding(0, 1).MarginRight(1).Background(o.fgMoreSubtle).Foreground(o.fgBase)
+	s.Attachments.Normal = base.Padding(0, 1).MarginRight(1).Background(o.fgMoreSubtle).Foreground(o.bgBase)
 	s.Attachments.Deleting = base.Padding(0, 1).Bold(true).Background(o.destructive).Foreground(o.fgBase)
 
 	// Pills styles
