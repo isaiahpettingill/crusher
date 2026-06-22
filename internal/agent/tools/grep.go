@@ -20,9 +20,9 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
 )
 
 // regexCache provides thread-safe caching of compiled regex patterns

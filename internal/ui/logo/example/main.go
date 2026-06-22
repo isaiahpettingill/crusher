@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/ui/logo"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/ui/logo"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 )
 
 func main() {

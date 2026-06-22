@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/charmbracelet/crusher/internal/backend"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/session"
 	"github.com/google/uuid"
+	"github.com/isaiahpettingill/crusher/internal/backend"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/session"
 )
 
 type controllerV1 struct {

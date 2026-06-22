@@ -3,10 +3,10 @@ package model
 import (
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/skills"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	uistyles "github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	uistyles "github.com/isaiahpettingill/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 

@@ -14,14 +14,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/app"
-	"github.com/charmbracelet/crusher/internal/backend"
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/permission"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/google/uuid"
+	"github.com/isaiahpettingill/crusher/internal/app"
+	"github.com/isaiahpettingill/crusher/internal/backend"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
 	"github.com/stretchr/testify/require"
 )
 

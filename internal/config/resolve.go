@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/env"
-	"github.com/charmbracelet/crusher/internal/shell"
+	"github.com/isaiahpettingill/crusher/internal/env"
+	"github.com/isaiahpettingill/crusher/internal/shell"
 )
 
 // resolveTimeout bounds how long a single ResolveValue call may spend

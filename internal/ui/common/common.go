@@ -6,12 +6,12 @@ import (
 	"os"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/crusher/internal/clipboard"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
-	"github.com/charmbracelet/crusher/internal/ui/util"
-	"github.com/charmbracelet/crusher/internal/workspace"
 	uv "github.com/charmbracelet/ultraviolet"
+	"github.com/isaiahpettingill/crusher/internal/clipboard"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/ui/util"
+	"github.com/isaiahpettingill/crusher/internal/workspace"
 )
 
 // MaxAttachmentSize defines the maximum allowed size for file attachments (5 MB).

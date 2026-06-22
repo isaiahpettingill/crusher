@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/google/uuid"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
 )
 
 // defaultUpdateDebounce is the default debounce window for [Service.Update].

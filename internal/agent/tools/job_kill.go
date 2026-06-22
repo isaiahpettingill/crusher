@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/shell"
+	"github.com/isaiahpettingill/crusher/internal/shell"
 )
 
 const (

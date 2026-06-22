@@ -3,8 +3,8 @@ package model
 import (
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/permission"
-	"github.com/charmbracelet/crusher/internal/ui/dialog"
+	"github.com/isaiahpettingill/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/ui/dialog"
 	"github.com/stretchr/testify/require"
 )
 

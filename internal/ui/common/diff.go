@@ -2,8 +2,8 @@ package common
 
 import (
 	"github.com/alecthomas/chroma/v2"
-	"github.com/charmbracelet/crusher/internal/ui/diffview"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/ui/diffview"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 )
 
 // DiffFormatter returns a diff formatter with the given styles that can be

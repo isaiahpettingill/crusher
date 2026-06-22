@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crusher/internal/agent/hyper"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/discover"
 	"github.com/invopop/jsonschema"
+	"github.com/isaiahpettingill/crusher/internal/agent/hyper"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/discover"
 	"github.com/spf13/cobra"
 )
 

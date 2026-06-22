@@ -12,8 +12,8 @@ import (
 	"testing"
 
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/env"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

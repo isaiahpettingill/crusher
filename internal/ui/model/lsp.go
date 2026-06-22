@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/lsp"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
-	"github.com/charmbracelet/crusher/internal/workspace"
 	"github.com/charmbracelet/x/powernap/pkg/lsp/protocol"
+	"github.com/isaiahpettingill/crusher/internal/lsp"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/workspace"
 )
 
 // LSPInfo wraps LSP client information with diagnostic counts by severity.

@@ -8,9 +8,9 @@ import (
 	"os/signal"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/client"
-	"github.com/charmbracelet/crusher/internal/config"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/isaiahpettingill/crusher/internal/client"
+	"github.com/isaiahpettingill/crusher/internal/config"
 	"github.com/spf13/cobra"
 )
 

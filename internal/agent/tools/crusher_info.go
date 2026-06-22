@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/lsp"
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/agent/tools/mcp"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/lsp"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 )
 
 const CrusherInfoToolName = "crusher_info"

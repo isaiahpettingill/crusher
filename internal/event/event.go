@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/version"
+	"github.com/isaiahpettingill/crusher/internal/version"
 	"github.com/posthog/posthog-go"
 )
 

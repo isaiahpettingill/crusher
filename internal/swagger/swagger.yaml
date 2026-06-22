@@ -772,7 +772,7 @@ info:
     sessions, agents, LSP, MCP, and more.
   license:
     name: MIT
-    url: https://github.com/charmbracelet/crusher/blob/main/LICENSE
+    url: https://github.com/isaiahpettingill/crusher/blob/main/LICENSE
   title: Crusher API
   version: "1.0"
 paths:

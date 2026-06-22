@@ -13,11 +13,11 @@ import (
 	"time"
 
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/oauth"
-	"github.com/charmbracelet/crusher/internal/oauth/codex"
-	"github.com/charmbracelet/crusher/internal/oauth/copilot"
 	"github.com/invopop/jsonschema"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/oauth"
+	"github.com/isaiahpettingill/crusher/internal/oauth/codex"
+	"github.com/isaiahpettingill/crusher/internal/oauth/copilot"
 )
 
 const (

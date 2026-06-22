@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/permission"
-	"github.com/charmbracelet/crusher/internal/pubsub"
-	"github.com/charmbracelet/crusher/internal/shell"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/shell"
 	"github.com/stretchr/testify/require"
 )
 

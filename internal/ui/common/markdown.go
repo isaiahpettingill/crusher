@@ -6,8 +6,8 @@ import (
 
 	"charm.land/glamour/v2"
 	"github.com/alecthomas/chroma/v2/formatters"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
-	"github.com/charmbracelet/crusher/internal/ui/xchroma"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/ui/xchroma"
 )
 
 const formatterName = "crusher"

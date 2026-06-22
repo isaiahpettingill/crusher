@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/agent"
-	"github.com/charmbracelet/crusher/internal/agent/agenttest"
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/agent"
+	"github.com/isaiahpettingill/crusher/internal/agent/agenttest"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/session"
 	"github.com/stretchr/testify/require"
 )
 

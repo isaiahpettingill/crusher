@@ -5,11 +5,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/agent/notify"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/pubsub"
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/agent/notify"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 	"github.com/stretchr/testify/require"
 )
 

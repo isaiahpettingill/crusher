@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/csync"
 )
 
 const (

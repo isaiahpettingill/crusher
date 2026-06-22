@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/oauth"
+	"github.com/isaiahpettingill/crusher/internal/oauth"
 )
 
 const (

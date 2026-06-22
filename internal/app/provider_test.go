@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/config"
 	"github.com/stretchr/testify/require"
 )
 

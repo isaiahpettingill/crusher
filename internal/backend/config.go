@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/charmbracelet/crusher/internal/agent"
-	mcptools "github.com/charmbracelet/crusher/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crusher/internal/commands"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/oauth"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/pubsub"
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/agent"
+	mcptools "github.com/isaiahpettingill/crusher/internal/agent/tools/mcp"
+	"github.com/isaiahpettingill/crusher/internal/commands"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/oauth"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 )
 
 // publishConfigChanged publishes a ConfigChanged event on the workspace's

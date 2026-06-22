@@ -70,7 +70,7 @@ builds:
       - goos: windows
         goarch: arm
     ldflags:
-      - -s -w -X github.com/charmbracelet/crusher/internal/version.Version={{.Version}}
+      - -s -w -X github.com/isaiahpettingill/crusher/internal/version.Version={{.Version}}
     flags:
       - -trimpath
 
@@ -116,7 +116,7 @@ aur_sources:
       export CGO_CXXFLAGS="${CXXFLAGS}"
       export CGO_LDFLAGS="${LDFLAGS}"
       export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
-      go build -ldflags="-w -s -buildid='' -linkmode=external -X github.com/charmbracelet/crusher/internal/version.Version=v${pkgver}" .
+      go build -ldflags="-w -s -buildid='' -linkmode=external -X github.com/isaiahpettingill/crusher/internal/version.Version=v${pkgver}" .
       ./crusher completion bash >./completions/crusher.bash
       ./crusher completion zsh >./completions/crusher.zsh
       ./crusher completion fish >./completions/crusher.fish
@@ -211,8 +211,8 @@ scoops:
 
 npms:
   - name: "@charmland/crusher"
-    repository: "git+https://github.com/charmbracelet/crusher.git"
-    bugs: https://github.com/charmbracelet/crusher/issues
+    repository: "git+https://github.com/isaiahpettingill/crusher.git"
+    bugs: https://github.com/isaiahpettingill/crusher/issues
     access: public
     disable: "{{ with .Prerelease }}true{{ end }}"
 
@@ -278,8 +278,8 @@ winget:
   - publisher: charmbracelet
     copyright: Charmbracelet, Inc
     publisher_url: https://charm.land
-    release_notes_url: "https://github.com/charmbracelet/crusher/releases/tag/{{.Tag}}"
-    license_url: https://github.com/charmbracelet/crusher/blob/main/LICENSE.md
+    release_notes_url: "https://github.com/isaiahpettingill/crusher/releases/tag/{{.Tag}}"
+    license_url: https://github.com/isaiahpettingill/crusher/blob/main/LICENSE.md
     skip_upload: "{{ with .Prerelease }}true{{ end }}"
     commit_author:
       name: "Charm"

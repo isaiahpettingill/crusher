@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/pubsub"
-	"github.com/charmbracelet/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/session"
 	"github.com/stretchr/testify/require"
 )
 

@@ -12,13 +12,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/fsext"
-	"github.com/charmbracelet/crusher/internal/home"
 	powernap "github.com/charmbracelet/x/powernap/pkg/lsp"
 	"github.com/charmbracelet/x/powernap/pkg/lsp/protocol"
 	"github.com/charmbracelet/x/powernap/pkg/transport"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/home"
 )
 
 // DiagnosticCounts holds the count of diagnostics by severity.

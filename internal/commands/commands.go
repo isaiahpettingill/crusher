@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/agent/tools/mcp"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/home"
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/agent/tools/mcp"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/home"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 )
 
 var namedArgPattern = regexp.MustCompile(`\$([A-Z][A-Z0-9_]*)`)

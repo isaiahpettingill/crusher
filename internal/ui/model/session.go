@@ -10,14 +10,14 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/diff"
-	"github.com/charmbracelet/crusher/internal/fsext"
-	"github.com/charmbracelet/crusher/internal/history"
-	"github.com/charmbracelet/crusher/internal/session"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
-	"github.com/charmbracelet/crusher/internal/ui/util"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/isaiahpettingill/crusher/internal/diff"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/history"
+	"github.com/isaiahpettingill/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/ui/util"
 )
 
 // loadSessionMsg is a message indicating that a session and its files have

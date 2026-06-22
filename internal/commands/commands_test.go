@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 	"github.com/stretchr/testify/require"
 )
 

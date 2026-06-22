@@ -5,13 +5,13 @@ import (
 	"strings"
 
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/fsext"
-	"github.com/charmbracelet/crusher/internal/session"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 )
 
 const (

@@ -8,9 +8,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/catwalk/pkg/catwalk"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/oauth/codex"
-	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/oauth/codex"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
 )
 
 func NewOAuthCodex(

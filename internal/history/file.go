@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/pubsub"
 	"github.com/google/uuid"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
 )
 
 const (

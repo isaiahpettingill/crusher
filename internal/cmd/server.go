@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	crusherlog "github.com/charmbracelet/crusher/internal/log"
-	"github.com/charmbracelet/crusher/internal/server"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	crusherlog "github.com/isaiahpettingill/crusher/internal/log"
+	"github.com/isaiahpettingill/crusher/internal/server"
 	"github.com/spf13/cobra"
 )
 

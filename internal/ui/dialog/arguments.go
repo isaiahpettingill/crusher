@@ -14,10 +14,10 @@ import (
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 
-	"github.com/charmbracelet/crusher/internal/commands"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	"github.com/charmbracelet/crusher/internal/ui/util"
 	uv "github.com/charmbracelet/ultraviolet"
+	"github.com/isaiahpettingill/crusher/internal/commands"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/ui/util"
 )
 
 // ArgumentsID is the identifier for the arguments dialog.

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/agent/tools"
-	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/agent/tools"
+	"github.com/isaiahpettingill/crusher/internal/proto"
 	"github.com/stretchr/testify/require"
 )
 

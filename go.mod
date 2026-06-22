@@ -1,4 +1,4 @@
-module github.com/charmbracelet/crusher
+module github.com/isaiahpettingill/crusher
 
 go 1.26.4
 

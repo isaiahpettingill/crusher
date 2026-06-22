@@ -7,7 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/charmbracelet/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/message"
 )
 
 // promptHistoryLoadedMsg is sent when prompt history is loaded.

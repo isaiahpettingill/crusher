@@ -6,8 +6,8 @@ import (
 
 	"charm.land/lipgloss/v2"
 	"charm.land/lipgloss/v2/table"
-	"github.com/charmbracelet/crusher/internal/projects"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/projects"
 	"github.com/spf13/cobra"
 )
 

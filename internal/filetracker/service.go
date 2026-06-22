@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/db"
 )
 
 // Service defines the interface for tracking file reads in sessions.

@@ -24,27 +24,27 @@ import (
 	fang "charm.land/fang/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/colorprofile"
-	"github.com/charmbracelet/crusher/internal/app"
-	"github.com/charmbracelet/crusher/internal/client"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/event"
-	"github.com/charmbracelet/crusher/internal/lock"
-	crusherlog "github.com/charmbracelet/crusher/internal/log"
-	"github.com/charmbracelet/crusher/internal/projects"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/server"
-	"github.com/charmbracelet/crusher/internal/session"
-	"github.com/charmbracelet/crusher/internal/skills"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	ui "github.com/charmbracelet/crusher/internal/ui/model"
-	"github.com/charmbracelet/crusher/internal/version"
-	"github.com/charmbracelet/crusher/internal/workspace"
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/exp/charmtone"
 	xstrings "github.com/charmbracelet/x/exp/strings"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/app"
+	"github.com/isaiahpettingill/crusher/internal/client"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/event"
+	"github.com/isaiahpettingill/crusher/internal/lock"
+	crusherlog "github.com/isaiahpettingill/crusher/internal/log"
+	"github.com/isaiahpettingill/crusher/internal/projects"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/server"
+	"github.com/isaiahpettingill/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	ui "github.com/isaiahpettingill/crusher/internal/ui/model"
+	"github.com/isaiahpettingill/crusher/internal/version"
+	"github.com/isaiahpettingill/crusher/internal/workspace"
 	"github.com/spf13/cobra"
 )
 
@@ -140,7 +140,7 @@ crusher --continue
 		if _, err := program.Run(); err != nil {
 			event.Error(err)
 			slog.Error("TUI run error", "error", err)
-			return errors.New("Crusher crashed. If metrics are enabled, we were notified about it. If you'd like to report it, please copy the stacktrace above and open an issue at https://github.com/charmbracelet/crusher/issues/new?template=bug.yml") //nolint:staticcheck
+			return errors.New("Crusher crashed. If metrics are enabled, we were notified about it. If you'd like to report it, please copy the stacktrace above and open an issue at https://github.com/isaiahpettingill/crusher/issues/new?template=bug.yml") //nolint:staticcheck
 		}
 		return nil
 	},

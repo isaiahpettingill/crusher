@@ -5,13 +5,13 @@ import (
 	"errors"
 	"os"
 
-	"github.com/charmbracelet/crusher/internal/agent"
-	"github.com/charmbracelet/crusher/internal/agent/notify"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/pubsub"
-	"github.com/charmbracelet/crusher/internal/shell"
+	"github.com/isaiahpettingill/crusher/internal/agent"
+	"github.com/isaiahpettingill/crusher/internal/agent/notify"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/shell"
 )
 
 // SendMessage validates and accepts a prompt for the workspace's agent,

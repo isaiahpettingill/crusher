@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/event"
+	"github.com/isaiahpettingill/crusher/internal/event"
 )
 
 func (a *sessionAgent) eventPromptSent(sessionID string) {

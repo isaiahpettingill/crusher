@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/agent/notify"
-	"github.com/charmbracelet/crusher/internal/pubsub"
+	"github.com/isaiahpettingill/crusher/internal/agent/notify"
+	"github.com/isaiahpettingill/crusher/internal/pubsub"
 	"github.com/stretchr/testify/require"
 )
 

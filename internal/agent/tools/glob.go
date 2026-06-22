@@ -14,8 +14,8 @@ import (
 	"strings"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/filepathext"
-	"github.com/charmbracelet/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/filepathext"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
 )
 
 const GlobToolName = "glob"

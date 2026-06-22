@@ -37,7 +37,6 @@ Build and install from this repo:
 ```bash
 go install github.com/isaiahpettingill/crusher@latest
 ```
-
 ## Getting Started
 
 The quickest way to get started is to grab an API key for your preferred
@@ -785,8 +784,8 @@ which maintainers rely on to inform development and support priorities. The
 metrics include solely usage metadata; prompts and responses are NEVER
 collected.
 
-Details on exactly what’s collected are in the source code ([here](https://github.com/charmbracelet/crusher/tree/main/internal/event)
-and [here](https://github.com/charmbracelet/crusher/blob/main/internal/llm/agent/event.go)).
+Details on exactly what’s collected are in the source code ([here](https://github.com/isaiahpettingill/crusher/tree/main/internal/event)
+and [here](https://github.com/isaiahpettingill/crusher/blob/main/internal/llm/agent/event.go)).
 
 You can opt out of metrics collection at any time by setting the environment
 variable by setting the following in your environment:
@@ -823,7 +822,7 @@ Installing an extra tool might be needed on Unix-like environments.
 
 ## Contributing
 
-See the [contributing guide](https://github.com/charmbracelet/crusher?tab=contributing-ov-file#contributing).
+See the [contributing guide](https://github.com/isaiahpettingill/crusher?tab=contributing-ov-file#contributing).
 
 ## Feedback
 
@@ -840,7 +839,7 @@ Need help or want to report an issue? Use the repository issues or community cha
 
 ## License
 
-[FSL-1.1-MIT](https://github.com/charmbracelet/crusher/raw/main/LICENSE.md)
+[FSL-1.1-MIT](https://github.com/isaiahpettingill/crusher/raw/main/LICENSE.md)
 
 ---
 

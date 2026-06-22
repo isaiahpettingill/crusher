@@ -12,11 +12,11 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/filepathext"
-	"github.com/charmbracelet/crusher/internal/home"
-	"github.com/charmbracelet/crusher/internal/shell"
-	"github.com/charmbracelet/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/filepathext"
+	"github.com/isaiahpettingill/crusher/internal/home"
+	"github.com/isaiahpettingill/crusher/internal/shell"
+	"github.com/isaiahpettingill/crusher/internal/skills"
 )
 
 // Prompt represents a template-based prompt generator.

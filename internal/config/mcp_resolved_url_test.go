@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/env"
+	"github.com/isaiahpettingill/crusher/internal/env"
 	"github.com/stretchr/testify/require"
 )
 

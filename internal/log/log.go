@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/event"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/event"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 

@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/lsp"
 	"github.com/charmbracelet/x/powernap/pkg/lsp/protocol"
+	"github.com/isaiahpettingill/crusher/internal/lsp"
 )
 
 type DiagnosticsParams struct {

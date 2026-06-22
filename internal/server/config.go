@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/proto"
 )
 
 // handlePostWorkspaceConfigSet sets a configuration field.

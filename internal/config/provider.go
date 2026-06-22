@@ -17,11 +17,11 @@ import (
 
 	"charm.land/catwalk/pkg/catwalk"
 	"charm.land/catwalk/pkg/embedded"
-	"github.com/charmbracelet/crusher/internal/agent/hyper"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/home"
-	"github.com/charmbracelet/crusher/internal/oauth/codex"
 	"github.com/charmbracelet/x/etag"
+	"github.com/isaiahpettingill/crusher/internal/agent/hyper"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/home"
+	"github.com/isaiahpettingill/crusher/internal/oauth/codex"
 )
 
 type syncer[T any] interface {

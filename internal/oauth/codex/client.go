@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/charmbracelet/crusher/internal/log"
-	"github.com/charmbracelet/crusher/internal/oauth"
+	"github.com/isaiahpettingill/crusher/internal/log"
+	"github.com/isaiahpettingill/crusher/internal/oauth"
 )
 
 // NewClient rewrites OpenAI Responses requests to ChatGPT's Codex endpoint.

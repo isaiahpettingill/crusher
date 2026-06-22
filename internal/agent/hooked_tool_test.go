@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/hooks"
-	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/hooks"
+	"github.com/isaiahpettingill/crusher/internal/permission"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/oauth"
-	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/oauth"
+	"github.com/isaiahpettingill/crusher/internal/proto"
 	"github.com/stretchr/testify/require"
 )
 

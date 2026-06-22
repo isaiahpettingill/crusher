@@ -1,8 +1,8 @@
 package backend
 
 import (
-	"github.com/charmbracelet/crusher/internal/permission"
-	"github.com/charmbracelet/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/proto"
 )
 
 // GrantPermission grants, denies, or persistently grants a permission

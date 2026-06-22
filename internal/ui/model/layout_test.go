@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"charm.land/bubbles/v2/textarea"
-	"github.com/charmbracelet/crusher/internal/session"
-	"github.com/charmbracelet/crusher/internal/ui/chat"
-	"github.com/charmbracelet/crusher/internal/ui/common"
+	"github.com/isaiahpettingill/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/ui/chat"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
 )
 
 // testMessageItem is a minimal chat item used to populate the chat list

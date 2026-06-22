@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/lock"
-	"github.com/charmbracelet/crusher/internal/version"
+	"github.com/isaiahpettingill/crusher/internal/lock"
+	"github.com/isaiahpettingill/crusher/internal/version"
 )
 
 // ErrDataDirLocked is returned by Connect when the data directory is

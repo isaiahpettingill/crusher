@@ -12,8 +12,8 @@ import (
 
 	"charm.land/log/v2"
 	"github.com/charmbracelet/colorprofile"
-	"github.com/charmbracelet/crusher/internal/config"
 	"github.com/charmbracelet/x/term"
+	"github.com/isaiahpettingill/crusher/internal/config"
 	"github.com/nxadm/tail"
 	"github.com/spf13/cobra"
 )

@@ -13,15 +13,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/app"
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/csync"
-	"github.com/charmbracelet/crusher/internal/db"
-	"github.com/charmbracelet/crusher/internal/proto"
-	"github.com/charmbracelet/crusher/internal/skills"
-	"github.com/charmbracelet/crusher/internal/ui/util"
-	"github.com/charmbracelet/crusher/internal/version"
 	"github.com/google/uuid"
+	"github.com/isaiahpettingill/crusher/internal/app"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/csync"
+	"github.com/isaiahpettingill/crusher/internal/db"
+	"github.com/isaiahpettingill/crusher/internal/proto"
+	"github.com/isaiahpettingill/crusher/internal/skills"
+	"github.com/isaiahpettingill/crusher/internal/ui/util"
+	"github.com/isaiahpettingill/crusher/internal/version"
 )
 
 // Common errors returned by backend operations.

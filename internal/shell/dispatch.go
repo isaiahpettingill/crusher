@@ -14,7 +14,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/charmbracelet/crusher/internal/filepathext"
+	"github.com/isaiahpettingill/crusher/internal/filepathext"
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/interp"
 	"mvdan.cc/sh/v3/syntax"

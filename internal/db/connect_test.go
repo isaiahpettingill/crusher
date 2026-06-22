@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/lock"
+	"github.com/isaiahpettingill/crusher/internal/lock"
 	"github.com/stretchr/testify/require"
 )
 

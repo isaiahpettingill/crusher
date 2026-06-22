@@ -14,10 +14,10 @@ import (
 	"charm.land/bubbles/v2/key"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	"github.com/charmbracelet/crusher/internal/home"
-	"github.com/charmbracelet/crusher/internal/ui/common"
-	fimage "github.com/charmbracelet/crusher/internal/ui/image"
 	uv "github.com/charmbracelet/ultraviolet"
+	"github.com/isaiahpettingill/crusher/internal/home"
+	"github.com/isaiahpettingill/crusher/internal/ui/common"
+	fimage "github.com/isaiahpettingill/crusher/internal/ui/image"
 )
 
 // FilePickerID is the identifier for the FilePicker dialog.

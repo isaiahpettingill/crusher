@@ -11,14 +11,14 @@ import (
 	"time"
 
 	"charm.land/fantasy"
-	"github.com/charmbracelet/crusher/internal/diff"
-	"github.com/charmbracelet/crusher/internal/filepathext"
-	"github.com/charmbracelet/crusher/internal/filetracker"
-	"github.com/charmbracelet/crusher/internal/fsext"
-	"github.com/charmbracelet/crusher/internal/history"
+	"github.com/isaiahpettingill/crusher/internal/diff"
+	"github.com/isaiahpettingill/crusher/internal/filepathext"
+	"github.com/isaiahpettingill/crusher/internal/filetracker"
+	"github.com/isaiahpettingill/crusher/internal/fsext"
+	"github.com/isaiahpettingill/crusher/internal/history"
 
-	"github.com/charmbracelet/crusher/internal/lsp"
-	"github.com/charmbracelet/crusher/internal/permission"
+	"github.com/isaiahpettingill/crusher/internal/lsp"
+	"github.com/isaiahpettingill/crusher/internal/permission"
 )
 
 type EditParams struct {

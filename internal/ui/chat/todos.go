@@ -6,11 +6,11 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/charmbracelet/crusher/internal/agent/tools"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/session"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/isaiahpettingill/crusher/internal/agent/tools"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/session"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 )
 
 // -----------------------------------------------------------------------------

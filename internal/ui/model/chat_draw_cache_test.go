@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/charmbracelet/crusher/internal/ui/chat"
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/isaiahpettingill/crusher/internal/ui/chat"
 	"github.com/stretchr/testify/require"
 )
 

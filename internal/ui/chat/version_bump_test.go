@@ -4,12 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/charmbracelet/crusher/internal/config"
-	"github.com/charmbracelet/crusher/internal/message"
-	"github.com/charmbracelet/crusher/internal/ui/anim"
-	"github.com/charmbracelet/crusher/internal/ui/attachments"
-	"github.com/charmbracelet/crusher/internal/ui/list"
-	"github.com/charmbracelet/crusher/internal/ui/styles"
+	"github.com/isaiahpettingill/crusher/internal/config"
+	"github.com/isaiahpettingill/crusher/internal/message"
+	"github.com/isaiahpettingill/crusher/internal/ui/anim"
+	"github.com/isaiahpettingill/crusher/internal/ui/attachments"
+	"github.com/isaiahpettingill/crusher/internal/ui/list"
+	"github.com/isaiahpettingill/crusher/internal/ui/styles"
 	"github.com/stretchr/testify/require"
 )
 

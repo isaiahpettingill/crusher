@@ -15,7 +15,7 @@ const docTemplate = `{
         },
         "license": {
             "name": "MIT",
-            "url": "https://github.com/charmbracelet/crusher/blob/main/LICENSE"
+            "url": "https://github.com/isaiahpettingill/crusher/blob/main/LICENSE"
         },
         "version": "{{.Version}}"
     },
